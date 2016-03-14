@@ -1,0 +1,226 @@
+% ********************************* HEADERS ***********************************
+\documentclass{article}
+\usepackage[top=.75in, bottom=.75in, left=.50in,right=.50in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titling}
+\pagestyle{fancy}
+\lhead{EECS 373 Project Proposal - Mega Wheels}
+\rhead{\thepage}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{
+  % language=C++,
+  showstringspaces=false,
+  basicstyle={\small\ttfamily},
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{dkgreen},
+}
+\usepackage[colorlinks,urlcolor={blue}]{hyperref}
+%\setlength{\parskip}{1em}
+\usepackage{parskip}
+\usepackage{indentfirst}
+\setlength{\droptitle}{-4em}
+% \usepackage{concmath}
+% \usepackage[T1]{fontenc}
+% ********************************* HEADERS ***********************************
+
+\begin{document}
+\title{\textbf{EECS 373 Project Proposal - Mega Wheels}}
+\author{
+  Sagar, Aaryaman\\
+  \texttt{aary@umich.edu}
+  \and
+  Ma, Chong\\
+  \texttt{machong@umich.edu}
+  \and 
+  Markov, Anton\\
+  \texttt{aamarkov@umich.edu}
+  \and
+  Dudkov, Artem\\
+  \texttt{dudkoff@umich.edu}
+}
+\date{}
+\maketitle
+
+\section{High Level Description} Our idea is to build a real life car battle
+game in which players get to control remote control cars that we buy off the
+market and customize so that they work in an embedded environment.  These cars
+will be customizable before the start of the game to have targeted abilities
+towards either attack, defense, speed or any other factors to be determined. 
+
+The project will consist of several RC cars with SmartFusion Boards built onto
+them that can read in input from a controller and output to control the motion
+of the cars.  We will refer to these as the slave boards from now on.  There
+will also be a master "server" setup with a computer and a SmartFusion Board
+together.  This master will be constantly reading input from the current state
+of the game, outputting results onto the computer and also giving the cars
+extra abilities and enhanced battling skills.
+
+What sets this game apart from other RC controlled car games is that each car
+will have customizable powers.  Before the game starts the players will be
+able to select what sort of car they want in software and that will determine
+the abilities of the car and how they progress to improve throughout the game.
+For example a car can be the speed car, and throughout the game as the car
+kills its opponents, it gains more speed, and another car can be a sharp
+shooter that shoots more accurately than other cars and gets better and better
+over time as it gets more kills.  Further the car that kills a stronger car
+gets more points; this encourages teaming up to destroy the dominating car. 
+
+The master server will keep track of the current state of the game at all
+times and display the results in a nice looking UI on the computer, which can
+further be projected onto a screen.  At the end of the game there will be a
+list of detailed events and top 5 kills shown on the software master node.
+
+\section{Rules of the Game} The cars will be controlled by different players.
+The game will compose of a time limit and the player with the maximum kills at
+the end of the game will win.  Before the game begins the players will be
+able to customize their car to have different abilities.  These will further
+be one of the many types of cars that will be highlighted in Section 5 -
+Software Class Hierarchy.  
+
+During the game the players will be able to deal damage to another players'
+car by either shooting them with the IR gun fitted on the car or by colliding
+with the other car.  The attack points for both of these will be determined by
+the master node before the beginning of the game.  
+
+\section{Design and Implementation} The cars will be built with identical
+hardware before the start of the games.  All customizations will be offered to
+the players.  So they can in essence pick the type of car they want and play
+the game according to that.  All pre-game setup will be done on the computer
+master server. 
+
+Before the game begins, the players will all be able to select the type of car
+and indicate whether they are ready to start.  This will all be given a
+convenient user interface on a computer. 
+
+Our choices for UI at the moment is a server built on a bootstrap frontend
+with HTML and CSS, the backend for which will be controlled with a web server
+we build.  This is justified by the extensive availability and documentation
+available for libraries and frameworks like Flask, Django, Pyramid, Java
+Servlet and Go’s built in libraries.  We expect to make further design
+decisions here since TCP connections through the SmartFusion will have to be
+sent through some existing library that interfaces with the existing network
+card on the board and one that provides a programming interface for us.  Or we
+will build this ourselves but we highly doubt that such a service will not
+exist.  Further building our own network library will involve further
+complications in the cases of latency of one connection interfering with
+another and this will subsequently incur the need to build a polling mechanism
+that will poll the network packet and preferably either sit waiting to to be
+interrupted.
+
+\subsection{Software and Hardware on the Cars}
+All cars will be fitted with SmartFusion boards and have three input sources
+\begin{enumerate}
+    \item An abstracted controller that a human uses to control the car.  For
+    example, if we use a wireless Gamecube controller, the receiver for the
+    controller will be this abstract controller.
+    \item IR sensor, this will be the sensor that senses another an attack
+    from another car.
+    \item XBee module that gets input from a master "server" that is
+    controlling the state of the game.  So in our case the state of the game
+    will be the powers of the car (i.e.  the abilities that the car is given
+    by virtue of its performance so far) and the current score in the game. 
+    \item Accelerometer, this tells the car whether another car has collided
+    with it.  And based on the type of the car the amount of health varied
+    will be different.
+\end{enumerate}
+
+And they will have some output sources
+\begin{enumerate}
+    \item LEDs to indicate the health of the car
+    \item XBee transmissions to the master
+    \item Motors that control the motion of the car
+    \item IR guns that are used to attack other cars
+\end{enumerate}
+
+They are programmed to serve three purposes
+\begin{enumerate}
+    \item Read in input from an abstract controller and the infrared guns.
+    And then update the components that correspond to its parameters, for
+    example there will be 5 leds that correspond to its health.
+    \item Update the components of the car to do the functions given to it by
+    the controller.  This will further interface with the infrared laser that
+    is meant to be a gun that shoots the other cars.
+\end{enumerate}
+
+\subsection{Software and Hardware on the Master Server}
+The master "server" communicates two ways via XBee with the cars.  Every
+time it gets an input, it computes the state of the game and sends this back
+to either the car that it got a request from or broadcasts back to all the
+cars.  The master server is composed of two parts
+\begin{enumerate}
+    \item A SmartFusion board that connects via XBee to the cars, and connects
+    to a computer via TCP through an ethernet.
+    \item A Computer that receives the state of the game via the TCP network
+    from the master board and displays the state in a nice UI
+\end{enumerate}
+
+The master server will be keeping track of the game at all times.  There are
+potentially two ways to do this.  
+\begin{enumerate}
+    \item The SmartFusion Board will receive the communication via XBee and
+    will transmit this information to the computer via TCP through a connected
+    ethernet cable
+    \item The computer itself will have a XBee receiver connected to it and
+    will constantly poll this with the help of a device driver that comes
+    bundled with the XBee packages. 
+\end{enumerate}
+
+Either way the server will be displaying the state of the game on the computer
+and will keep responding to the cars with response messages that can
+potentially contain upgrades for the cars. 
+
+\newpage
+\section{Functional Diagram}
+\begin{figure}[!htb]
+\centering
+\includegraphics[height=15cm]{functionaldiagram.png}
+\caption{High level overview of the project components}
+\end{figure}
+
+\newpage
+\section{Software Class Hierarchy}
+\begin{figure}[!htb]
+\centering
+\includegraphics[height=8cm]{classhierarchy.png}
+\caption{An Object Oriented software view of the cars}
+\end{figure}
+
+\section{Component List}
+\begin{enumerate}
+    \item RC cars (3 - 4)
+        \begin{itemize}
+            \item Driven by DC Motor
+            \item Servo controls steering
+        \end{itemize}
+    \item Controllers (1 per car)
+        \begin{itemize}
+            \item Gamecube \ Nintendo 64 wireless controller and receiver
+        \end{itemize}
+    \item Computer (1)
+    \item SmartFusion Boards (1 per car, +1 to control ‘main xbee’ )
+    \item LEDs (10 per car)
+        \begin{itemize}
+            \item Resistors for each LED
+        \end{itemize}
+    \item 3D Accelerometer (1 per car)
+    \item IR transmitter (1 per car)
+        \begin{itemize}
+            \item Tube to insert the transmitter into to narrow the field of
+            view
+        \end{itemize}
+    \item IR receiver (1 per car)
+        \begin{itemize}
+            \item Tube to insert the transmitter into to narrow the field of
+            view
+        \end{itemize}
+\end{enumerate}
+
+\end{document}
+
+
+
+
