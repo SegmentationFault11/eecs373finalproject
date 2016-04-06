@@ -17,6 +17,8 @@ def api_jsonify(fn):
                     "array"})
                 response.status_code = 400
                 return response
+            else:
+                return fn(*args, **kwargs)
 
         # return the response object constructed with the json.dumps from the
         # call to another function that returns an array or a simple

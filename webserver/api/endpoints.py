@@ -4,6 +4,38 @@ from __init__ import api, mysql, execute_query
 from db_models import *
 from decorators import api_jsonify
 
+def get_request_with_classname(classname):
+    """This function is used as an handle to handle a get request to all the
+    endpoints here in this file."""
+
+    execute_query("SELECT * FROM " + classname.__name__ + "s;")
+    objects = [classname(object).to_json() \
+            for object in execute_query("SELECT * FROM " + \
+                classname.__name__ + "s;")]
+    return objects
+
+def post_request_with_class(classname):
+    """This function is used as an handle to handle a post request to all the
+    endpoints here.  This assumes that the request.json object has an array of
+    objects that can be used to construct an object of type 'classname'."""
+    sql_values_tuples = ",".join([classname.from_json(json_object).to_string_tuple() \
+                for json_object in request.json])
+    try:
+
+        # execute the sql query and then return a json response saying that
+        # things were ok
+        execute_query(("INSERT INTO " + \
+                classname.__name__ + "s VALUES " + sql_values_tuples), 
+                needs_commit = True)
+
+        return jsonify({ "status":"ok" })
+
+    except Exception as e:
+
+        # return a json response that has the stringified version of the error
+        return jsonify({ "status":str(e) })
+
+
 @api.route("/pictures/<picture_name>")
 def send_picture(picture_name):
     """Used to send the requested picture from the pictures folder."""
@@ -13,44 +45,28 @@ def send_picture(picture_name):
 @api_jsonify
 def car_type():
     """Get all objects of type car_type"""
-    car_types = [CarType(car_type).to_json() \
-            for car_type in execute_query("SELECT * FROM CarTypes;")]
-    return car_types
-
+    return get_request_with_classname(CarType)
 
 @api.route("/game", methods = ["GET", "POST"])
 @api_jsonify
 def game():
     """Get all objects of type game"""
-
     if request.method == "GET":
-        games = [Game(game).to_json() \
-                for game in execute_query("SELECT * FROM Games;")]
-        return games
+        return get_request_with_classname(Game)
     else:
-        games = [Game().from_json(json_object).to_string_tuple() for \
-                    json_object in request.json]
-        print games
-        return "yes"
+        return post_request_with_class(Game)
 
 
 @api.route("/game_update", methods = ["GET", "POST"])
 @api_jsonify
 def game_update():
     """Return all the objects of type GameUpdates"""
-
     if request.method == "GET":
-        game_updates = [GameUpdate(update).to_json \
-                for update in execute_query("SELECT * FROM GameUpdates;")]
-        return game_updates
-
+        return get_request_with_classname(GameUpdate)
 
 @api.route("/player_and_car", methods = ["GET", "POST"])
 @api_jsonify
 def player_and_car():
     """Return information about the player and the car"""
-
     if request.method == "GET":
-        player_and_cars = [PlayerAndCar(pandc) \
-                for pandc in execute_query("SELECT * FROM PlayerAndCars;")]
-        return player_and_cars
+        return get_request_with_classname(PlayerAndCar)
