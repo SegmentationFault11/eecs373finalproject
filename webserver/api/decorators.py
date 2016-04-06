@@ -1,5 +1,5 @@
 import json
-from flask import Response
+from flask import Response, request, jsonify
 from functools import wraps
 
 def api_jsonify(fn):
@@ -9,6 +9,14 @@ def api_jsonify(fn):
     appropriate mimetype set"""
     @wraps(fn)
     def function_wrapper(*args, **kwargs):
+
+        # Check if the data is in array format
+        if request.method == "POST":
+            if not isinstance(request.json, list):
+                response = jsonify({"error": "Please provide the data as an "
+                    "array"})
+                response.status_code = 400
+                return response
 
         # return the response object constructed with the json.dumps from the
         # call to another function that returns an array or a simple

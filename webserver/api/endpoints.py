@@ -1,5 +1,5 @@
 import json
-from flask import jsonify, Response
+from flask import jsonify, request
 from __init__ import api, mysql, execute_query
 from db_models import *
 from decorators import api_jsonify
@@ -17,26 +17,40 @@ def car_type():
             for car_type in execute_query("SELECT * FROM CarTypes;")]
     return car_types
 
-@api.route("/game")
+
+@api.route("/game", methods = ["GET", "POST"])
 @api_jsonify
 def game():
     """Get all objects of type game"""
-    games = [Game(game).to_json() \
-            for game in execute_query("SELECT * FROM Games;")]
-    return games
 
-@api.route("/game_update")
+    if request.method == "GET":
+        games = [Game(game).to_json() \
+                for game in execute_query("SELECT * FROM Games;")]
+        return games
+    else:
+        games = [Game().from_json(json_object).to_string_tuple() for \
+                    json_object in request.json]
+        print games
+        return "yes"
+
+
+@api.route("/game_update", methods = ["GET", "POST"])
 @api_jsonify
 def game_update():
     """Return all the objects of type GameUpdates"""
-    game_updates = [GameUpdate(update).to_json \
-            for update in execute_query("SELECT * FROM GameUpdates;")]
-    return game_updates
 
-@api.route("/player_and_car")
+    if request.method == "GET":
+        game_updates = [GameUpdate(update).to_json \
+                for update in execute_query("SELECT * FROM GameUpdates;")]
+        return game_updates
+
+
+@api.route("/player_and_car", methods = ["GET", "POST"])
 @api_jsonify
 def player_and_car():
     """Return information about the player and the car"""
-    player_and_cars = [PlayerAndCar(pandc) \
-            for pandc in execute_query("SELECT * FROM PlayerAndCars;")]
-    return player_and_cars
+
+    if request.method == "GET":
+        player_and_cars = [PlayerAndCar(pandc) \
+                for pandc in execute_query("SELECT * FROM PlayerAndCars;")]
+        return player_and_cars

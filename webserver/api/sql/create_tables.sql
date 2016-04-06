@@ -1,6 +1,7 @@
 CREATE TABLE Games 
 (
     game_id INT NOT NULL AUTO_INCREMENT,
+    game_stage INT CHECK(game_stage < 3),
 
     PRIMARY KEY(game_id)
 );
@@ -15,7 +16,7 @@ CREATE TABLE GameUpdates
 
 CREATE TABLE CarTypes 
 (
-    car_type CHAR(30) UNIQUE,
+    car_type CHAR(30) UNIQUE
 );
 
 CREATE TABLE PlayerAndCars 
@@ -25,6 +26,7 @@ CREATE TABLE PlayerAndCars
     car_health INT,
     kills INT,
 
-    FOREIGN KEY(car_type) REFERENCES CarTypes(car_type)
+    FOREIGN KEY(car_type) REFERENCES CarTypes(car_type),
+    PRIMARY KEY(player_id)
 );
 
