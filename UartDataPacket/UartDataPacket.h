@@ -61,7 +61,23 @@ typedef struct {
     /*
      * The data of the command.  3 bytes are provided for that purpose. 
      */
-    uint8_t command_data[3];
+    uint8_t command_data;
+
+    /*
+     * An unique identifier from the sender of the message.  This is relevant
+     * only to the sender.  The receiver needs to reply to a message with the
+     * sent unique id with the ack byte set to a 1 for the receiver to know
+     * that the message has been received.  Or else he will keep sending the
+     * same message over and over again.  
+     */
+    uint8_t message_id;
+
+    /*
+     * Used in a response message from a slave to its master indicating that
+     * the packet was accepted.  If this is missing then the previous packet
+     * should be sent again. 
+     */
+    uint8_t ack;
 
     /*
      * Forward padding.
