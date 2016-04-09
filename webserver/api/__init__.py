@@ -1,7 +1,12 @@
 # The flask api route object
-from flask import Flask
+from flask import Flask, Blueprint
 from flask.ext.mysql import MySQL
-api = Flask(__name__)
+api = Flask(__name__) 
+
+@api.after_request
+def apply_all_origin_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 # Setup mysql cursor, get cursor and connection every single time
 mysql = MySQL()

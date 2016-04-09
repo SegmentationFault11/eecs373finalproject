@@ -75,8 +75,15 @@ Activity.prototype = {
         this.reflect_change_in_state_for_activity();
 
         // call the appropriate callback that the deriver can change to suit
-        // his AJAX-ridden motives
-        this.on_show(optional_data);
+        // his AJAX-ridden motives, if he returns a string they want to switch
+        // to then switch and dont show the views for this screen
+        var result_from_on_show = this.on_show(optional_data)
+        if (result_from_on_show !== undefined) {
+            
+            // TODO assert that this is a string
+            this.router.switch_to(result_from_on_show);
+            return;
+        }
 
         // do what the function call says
         this.show_views(milli_seconds_to_fade_in);
@@ -112,7 +119,11 @@ Activity.prototype = {
         }
     },
 
-
+    /*
+     * used to redraw the screen.  All code that is used for this purpose has
+     * to go in here
+     */
+    redraw : function() {},
 
     /**************************************************************************
      * PRIVATES

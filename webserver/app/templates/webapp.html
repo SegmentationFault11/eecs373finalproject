@@ -29,6 +29,7 @@
             }
         </style>
 
+        <script type="text/javascript" src="./static/external/handlebars.js"></script>
     </head>
 
     <!-- The main stuff -->
@@ -74,43 +75,29 @@
         <!-- the controller which has the car selection process -->
         <div id="select_car_controller">
             <div class="container">
+
                 <div style="text-align:center;" class="row">
                     <h1>Player 1 pick your car</h1><br>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6 col-md-6">
-                        <div class="thumbnail">
-                            <a href="#"><img src="./static/fast.png"
-                                alt="..."></a>
-                            <h1>Fast Car</h1>
-                            <button class="btn btn-primary">Choose</button>
+
+                {% raw %}
+                <script id="car_thumbnail_template"
+                    type="text/x-handlebars-template">
+                    <div class="row">
+                        <div id="car_thumbnail_template_placeholder"></div>
+                                {{#each car_types}}
+                                    <div class="col-xs-6 col-md-6">
+                                        <div class="thumbnail">
+                                            <a href="#"><img src="{{image_url}}"
+                                                alt="..."></a>
+                                            <h1>{{car_type}}</h1>
+                                            <button class="btn btn-primary">Choose</button>
+                                        </div>
+                                    </div>
+                                {{/each}}
                         </div>
                     </div>
-                    <div class="col-xs-6 col-md-6">
-                        <div class="thumbnail">
-                            <a href="#"><img src="./static/tank.png"
-                                alt="..."></a>
-                            <h1>Fucking Tank</h1>
-                            <button class="btn btn-primary">Choose</button>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-md-6">
-                        <div class="thumbnail">
-                            <a href="#"><img src="./static/strong.png"
-                                alt="..."></a>
-                            <h1>Monster truck</h1>
-                            <button class="btn btn-primary">Choose</button>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-md-6">
-                        <div class="thumbnail">
-                            <a href="#"><img src="./static/trump.png"
-                                alt="..."></a>
-                            <h1>Donald Trump</h1>
-                            <button class="btn btn-primary">Choose</button>
-                        </div>
-                    </div>
-                </div>
+                </script>
+                {% endraw %}
             </div>
         </div>
 
@@ -134,6 +121,7 @@
         <script type="text/javascript" src="./static/js/Router.js"></script>
         <script type="text/javascript" src="./static/js/Activity.js"></script>
         <script type="text/javascript" src="./static/js/MainActivity.js"></script>
+        <script type="text/javascript" src="./static/js/SelectCarActivity.js"></script>
 
     </body>
 

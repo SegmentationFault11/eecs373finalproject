@@ -43,7 +43,7 @@ class GameUpdate():
         except KeyError as ke:
             raise KeyError("GameUpdate object cannot be constructed from json")
     def to_string_tuple(self):
-        return "({game_id}, \'{json_update_blob}\')".format(game_id = self.game_id, \
+        return "({game_id}, \"{json_update_blob}\")".format(game_id = self.game_id, \
                 json_update_blob = self.json_update_blob)
 
 class CarType():
@@ -74,6 +74,7 @@ class PlayerAndCar():
         self.car_type = tuple_in[1]
         self.car_health = tuple_in[2]
         self.kills = tuple_in[3]
+        self.game_id = tuple_in[4]
 
     def __repr__(self):
         return "<PlayerAndCar {tuple}>".format(tuple = self.to_string_tuple())
@@ -84,19 +85,21 @@ class PlayerAndCar():
     # JSON AND SQL METHODS
     def to_json(self):
         return { "player_id" : self.player_id, "car_type" : self.car_type, \
-                "car_health" : self.car_health, "kills" : self.kills }
+                "car_health" : self.car_health, "kills" : self.kills,
+                "game_id" : self.game_id}
     @staticmethod
     def from_json(json):
         try:
             return PlayerAndCar((json['player_id'], json['car_type'],
-                    json['car_health'], json['kills']))
+                    json['car_health'], json['kills'], json['game_id']))
         except KeyError as ke:
             raise KeyError("PlayerAndCar object cannot be constructed from"
                 "json")
     def to_string_tuple(self):
-        return "({player_id}, \'{car_type}\', {car_health}, {kills})"\
+        return "({player_id}, \'{car_type}\', {car_health}, {kills}, {game_id})"\
                 .format(player_id = self.player_id, car_type = self.car_type,
-                        car_health = self.car_health, kills = self.kills)
+                        car_health = self.car_health, kills = self.kills,
+                        game_id = self.game_id)
 
 
 if __name__ == "__main__":
