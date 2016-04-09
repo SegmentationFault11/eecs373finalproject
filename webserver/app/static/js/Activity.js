@@ -30,9 +30,11 @@ function Activity(id_in, router_in) {
 Activity.prototype = {
     /*
      * Lifecycle methods
-     * on_show() is called before the activity is about to be displayed on
-     * the screen.  The optional_data parameter is passed in directly from the
-     * show() function.  The public state need not be parsed here.
+     * on_show() is called after the activity has been put on the screen, any
+     * and all ajax motives you have should be done here.  The page should be
+     * shown completely on the screen with a callback here that calls the
+     * Activity::redraw function to lay out any templates (for example
+     * Handlebar templates that you might have)
      *
      * on_hide() is called before the activity disappears from sight.
      * Overload these with the code you want to execute before the screen is
@@ -74,19 +76,13 @@ Activity.prototype = {
         this.public_state = this.get_state_from_browser_link();
         this.reflect_change_in_state_for_activity();
 
+        // do what the function call says
+        this.show_views(milli_seconds_to_fade_in);
+
         // call the appropriate callback that the deriver can change to suit
         // his AJAX-ridden motives, if he returns a string they want to switch
         // to then switch and dont show the views for this screen
-        var result_from_on_show = this.on_show(optional_data)
-        if (result_from_on_show !== undefined) {
-            
-            // TODO assert that this is a string
-            this.router.switch_to(result_from_on_show);
-            return;
-        }
-
-        // do what the function call says
-        this.show_views(milli_seconds_to_fade_in);
+        this.on_show(optional_data)
     },
 
     /*

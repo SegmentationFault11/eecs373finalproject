@@ -14,11 +14,13 @@ def api_jsonify(fn):
         if request.method == "POST":
 
             if request.json is None:
+                print request.json
                 response = jsonify({"status": "Please provide some data as a "
                     "json array"})
                 response.status_code = 400
                 return response
             if not isinstance(request.json, list):
+                print request.json
                 response = jsonify({"status": "Please provide the data as an "
                     "array"})
                 response.status_code = 400

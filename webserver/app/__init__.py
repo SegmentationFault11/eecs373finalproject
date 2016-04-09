@@ -1,6 +1,6 @@
 """This module is used to serve the js webapp"""
 import requests, json
-from flask import Flask, render_template, jsonify, Response
+from flask import Flask, render_template, jsonify, Response, request
 app = Flask(__name__)
 
 API_DOMAIN = "http://localhost:8000/"
@@ -9,13 +9,23 @@ API_DOMAIN = "http://localhost:8000/"
 def web_page():
     return render_template("webapp.html")
 
-@app.route("/<path>")
+@app.route("/<path>", methods = ["GET", "POST"])
 def forward_request(path):
     api_endpoint = API_DOMAIN + path
     print "Forwarding request to " + api_endpoint
 
     try:
-        response_from_api_server = requests.get(api_endpoint).json()
+        response_from_api_server = {}
+        if request.method == "GET":
+            response_from_api_server = requests.get(api_endpoint).json()
+        else:
+            print "REQUEST DATA ", request.data
+            print "REQUEST HEADERS ", request.headers
+            print "POSTING ", request.json
+            response_from_api_server = requests.post(api_endpoint, headers =
+                    {"content-type":"application/json"}, 
+                    data = json.dumps(request.json)).json()
+
         print "Got response from " + api_endpoint + ": ", response_from_api_server
         
         # if response is an array then convert it and return, else jsonify and

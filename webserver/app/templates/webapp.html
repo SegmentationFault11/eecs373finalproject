@@ -83,14 +83,14 @@
                 <script id="car_thumbnail_template"
                     type="text/x-handlebars-template">
                     <div class="row">
-                        <div id="car_thumbnail_template_placeholder"></div>
                                 {{#each car_types}}
                                     <div class="col-xs-6 col-md-6">
                                         <div class="thumbnail">
                                             <a href="#"><img src="{{image_url}}"
                                                 alt="..."></a>
                                             <h1>{{car_type}}</h1>
-                                            <button class="btn btn-primary">Choose</button>
+                                            <button 
+                                                class="btn btn-primary">Choose</button>
                                         </div>
                                     </div>
                                 {{/each}}
@@ -98,6 +98,7 @@
                     </div>
                 </script>
                 {% endraw %}
+                <div id="car_thumbnail_template_placeholder"></div>
             </div>
         </div>
 
