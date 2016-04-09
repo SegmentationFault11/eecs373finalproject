@@ -22,6 +22,8 @@ def post_request_with_class(classname):
     """This function is used as an handle to handle a post request to all the
     endpoints here.  This assumes that the request.json object has an array of
     objects that can be used to construct an object of type 'classname'."""
+
+    print "Passed in ", request.json
     sql_values_tuples = ",".join([classname.from_json(json_object).to_string_tuple() \
                 for json_object in request.json])
     try:

@@ -19,9 +19,6 @@ def forward_request(path):
         if request.method == "GET":
             response_from_api_server = requests.get(api_endpoint).json()
         else:
-            print "REQUEST DATA ", request.data
-            print "REQUEST HEADERS ", request.headers
-            print "POSTING ", request.json
             response_from_api_server = requests.post(api_endpoint, headers =
                     {"content-type":"application/json"}, 
                     data = json.dumps(request.json)).json()

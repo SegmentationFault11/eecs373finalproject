@@ -65,8 +65,8 @@
                     component for calling extra attention to featured content or
                     information.</p>
                     <p>
-                        <button id="start_button" class="btn
-                            btn-primary">Start game</button>
+                    <button id="start_button" class="btn
+                        btn-primary">Start game</button>
                     </p>
                 </div> <!-- jumbotron -->
             </div>
@@ -78,23 +78,23 @@
 
                 <div style="text-align:center;" class="row">
                     <h1>Player 1 pick your car</h1><br>
+                </div>
 
                 {% raw %}
                 <script id="car_thumbnail_template"
                     type="text/x-handlebars-template">
                     <div class="row">
-                                {{#each car_types}}
-                                    <div class="col-xs-6 col-md-6">
-                                        <div class="thumbnail">
-                                            <a href="#"><img src="{{image_url}}"
-                                                alt="..."></a>
-                                            <h1>{{car_type}}</h1>
-                                            <button 
-                                                class="btn btn-primary">Choose</button>
-                                        </div>
-                                    </div>
-                                {{/each}}
+                        {{#each car_types}}
+                        <div class="col-xs-6 col-md-6">
+                            <div class="thumbnail">
+                                <a href="#"><img src="{{image_url}}"
+                                    alt="..."></a>
+                                <h1>{{car_type}}</h1>
+                                <button 
+                                    class="btn btn-primary">Choose</button>
+                            </div>
                         </div>
+                        {{/each}}
                     </div>
                 </script>
                 {% endraw %}

@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // make all requests synchronous
-    $.ajaxSetup({async:false});
+    // $.ajaxSetup({async:false});
 
     $('#home_controller').css('display', 'none');
     $('#select_car_controller').css('display', 'none');

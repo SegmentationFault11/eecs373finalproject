@@ -95,8 +95,14 @@ Activity.prototype = {
 
         // WTF?? Yeah that's right. 
         return function() {
+
+            // call the things that need to be called
             functor_to_decorate();
+
+            // and then update the public state and redraw the screen to match
+            // the data bindings that you have set up
             this.reflect_change_in_state_for_activity();
+            this.redraw();
         };
     },
 
@@ -120,6 +126,28 @@ Activity.prototype = {
      * to go in here
      */
     redraw : function() {},
+
+    /*
+     * A utility function that can be used to redraw the handlebar template
+     * with the given id and put the resulting html in the given placeholder
+     * with the given context
+     */
+    redraw_handlebar_template_with_context : function(template,
+            placeholder, context) {
+
+        // print useful debugging information to the console
+        console.log("Compiling handlebar template with the id " + 
+                template + "... With context .. ");
+        console.log(context);
+        console.log("Trying to put this resulting html at placeholder " 
+                + placeholder);
+
+        // execute the 4 necessary steps
+        var the_template_script = $(template).html(); 
+        var the_template = Handlebars.compile(the_template_script);
+        var compiled_html = the_template(context);
+        $(placeholder).html(compiled_html);
+    },
 
     /**************************************************************************
      * PRIVATES

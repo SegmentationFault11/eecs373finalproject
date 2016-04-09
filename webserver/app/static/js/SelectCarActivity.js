@@ -22,14 +22,10 @@ SelectCarActivity.prototype.on_show = function(optional_data) {
 }
 
 SelectCarActivity.prototype.wire_up_widgets = function() {
-    this.redraw();
 };
 
 SelectCarActivity.prototype.redraw = function() {
-    var the_template_script = $('#car_thumbnail_template').html();
 
-    // compile the template from the car_types variable
-    the_template = Handlebars.compile(the_template_script);
     var context = { car_types : [] };
     for (var i = 0; i < this.car_types.length; ++i) {
         context.car_types.push({
@@ -37,24 +33,25 @@ SelectCarActivity.prototype.redraw = function() {
             image_url : "./static/" + this.car_types[i].car_type + ".png"
         });
     }
-    console.log(context);
-
     // set the current player to the context
     context.current_player = this.current_player;
 
-    var compiled_html = the_template(context);
-    $('#car_thumbnail_template_placeholder').html(compiled_html)
+    this.redraw_handlebar_template_with_context(
+            '#car_thumbnail_template', '#car_thumbnail_template_placeholder',
+            context);
 };
 
 SelectCarActivity.prototype.get_car_types = function() {
 
     // get the number of players and the types of cars
-    $.getJSON("/car_type", function(data) {
+    $.getJSON("http://localhost:8000/car_type", function(data) {
         console.log("SelectCarActivity : Made sjax get request to /car_type");
         console.log(data);
 
         // assign to this variable
         this.car_types = data;
+
+        this.redraw();
     }.bind(this));
 }
 
@@ -62,11 +59,13 @@ SelectCarActivity.prototype.get_players_and_cars = function() {
 
     // get the players that are in the backend already, these guys have
     // already selected their cars
-    $.getJSON("/player_and_car", function(data) {
+    $.getJSON("http://localhost:8000/player_and_car", function(data) {
         console.log("SelectCarActivity : Made sjax get request to /player_and_car");
         console.log(data);
 
         this.player_and_cars = data;
+
+        this.redraw();
     }.bind(this));
 };
 
