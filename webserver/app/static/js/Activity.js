@@ -1,3 +1,5 @@
+FADE_MS = 500;
+
 function Activity(id_in, router_in) {
 
     /*
@@ -66,7 +68,7 @@ Activity.prototype = {
      * the optional_data parameter can be used to pass in data to this
      * activity.  
      */
-    show : function(milli_seconds_to_fade_in, optional_data) {
+    show : function(optional_data) {
         
         // get the public state from the browser and set back the state of the
         // browser to match the state of the activity.  This is done here even
@@ -76,34 +78,11 @@ Activity.prototype = {
         this.public_state = this.get_state_from_browser_link();
         this.reflect_change_in_state_for_activity();
 
-        // do what the function call says
-        this.show_views(milli_seconds_to_fade_in);
-
         // call the appropriate callback that the deriver can change to suit
         // his AJAX-ridden motives, if he returns a string they want to switch
         // to then switch and dont show the views for this screen
+        // NEED TO CALL show_views() to show things
         this.on_show(optional_data)
-    },
-
-    /*
-     * All event handlers such as ajax call handlers or button click handlers
-     * should be decorated with the fucnctor returned fro this function.  This
-     * ensures consistency in the activity and the public state AKA the
-     * browser URL AKA the window.location.hash
-     */
-    decorate_callback : function(functor_to_decorate) {
-
-        // WTF?? Yeah that's right. 
-        return function() {
-
-            // call the things that need to be called
-            functor_to_decorate();
-
-            // and then update the public state and redraw the screen to match
-            // the data bindings that you have set up
-            this.reflect_change_in_state_for_activity();
-            this.redraw();
-        };
     },
 
     /*
@@ -112,13 +91,9 @@ Activity.prototype = {
      * the parameter should be the number of milliseconds the fading in of the
      * views should take.
      */
-    show_views : function(milli_seconds_to_fade_in) {
+    show_views : function() {
         
-        if (typeof milli_seconds_to_fade_in === 'undefined') {
-            $('#' + this.id).css('display', '');
-        } else { 
-            $('#' + this.id).fadeIn(milli_seconds_to_fade_in);
-        }
+        $('#' + this.id).fadeIn(FADE_MS);
     },
 
     /*

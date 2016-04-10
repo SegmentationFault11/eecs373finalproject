@@ -1,3 +1,10 @@
+/* 
+ * For really lightning fast rechecks, I don't care about performance with a
+ * language which is threaded but pretends to be single threaded.  That just
+ * leads to bad code that "just works"
+ */
+TIME_BETWEEN_CHECKS = 1;
+
 function AjaxRequester() {
 
     // the counter for the number of requests that have been registered
@@ -74,7 +81,7 @@ AjaxRequester.prototype.wait_for_all = function(callback) {
 
     wait_for(function() { 
         return this.number_of_requests === 0; 
-    }.bind(this), 50, function() { 
+    }.bind(this), TIME_BETWEEN_CHECKS, function() { 
         callback(); 
     });
 }

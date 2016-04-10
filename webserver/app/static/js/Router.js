@@ -26,10 +26,10 @@ Router.prototype = {
         
         if (activity_id_in in this.public_activities) {
             this.current_activity = this.public_activities[activity_id_in];
-            this.public_activities[activity_id_in].show(500);
+            this.public_activities[activity_id_in].show();
         } else if (activity_id_in in this.private_activities) {
             this.current_activity = this.private_activities[activity_id_in];
-            this.private_activities[activity_id_in].show(500);
+            this.private_activities[activity_id_in].show();
         }
     },
 

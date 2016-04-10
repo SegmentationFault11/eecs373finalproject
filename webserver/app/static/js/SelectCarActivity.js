@@ -31,12 +31,15 @@ SelectCarActivity.prototype.on_show = function(optional_data) {
         if (this.game[0].game_stage > 1) {
             this.router.switch_to("start_game_controller");
         } else {
-            this.get_data_and_redraw();
+
+            // this will wait for one more ajax call to go through and then
+            // display the views on the screen
+            this.get_data_redraw_wire_show();
         }
     }.bind(this));
 }
 
-SelectCarActivity.prototype.get_data_and_redraw = function() {
+SelectCarActivity.prototype.get_data_redraw_wire_show = function() {
 
     // get data from the API server
     this.ajax_requester.get("/car_type", function(data) {
@@ -49,7 +52,11 @@ SelectCarActivity.prototype.get_data_and_redraw = function() {
     // do this when the above two calls are complete
     this.ajax_requester.wait_for_all(function() {
         this.current_player = this.player_and_cars.length + 1;
+
         this.redraw();
+        this.wire_up_widgets();
+        this.show_views();
+
     }.bind(this));
 };
 
@@ -69,9 +76,6 @@ SelectCarActivity.prototype.redraw = function() {
     this.redraw_handlebar_template_with_context(
             '#car_thumbnail_template', '#car_thumbnail_template_placeholder',
             context);
-
-    // since new views have been draws they need to be wired up
-    this.wire_up_widgets();
 };
 
 SelectCarActivity.prototype.wire_up_widgets = function() {

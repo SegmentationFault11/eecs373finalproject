@@ -15,25 +15,31 @@ MainActivity.prototype = new Activity();
 
 MainActivity.prototype.on_show = function(optional_data) {
 
-    console.log("in funtciotn");
-
     // check if a game exists
     this.ajax_requester.get('/game', function(data) {
         this.game_data = data;
+    }.bind(this));
+    
+    this.ajax_requester.wait_for_all(function() {
          
         // switch to other controller if a game has started in the backend
         if (!this.game_data || this.game_data.length == 0) {
             console.log("MainActivity : Staying in current activity");
+
+            // wire up widgets to activity now because all requests have been
+            // made
+            this.redraw(); // empty but here for clarity
+            this.wire_up_widgets();
+            this.show_views();
+
         } else {
             console.log("MainActivity : Switching to select_car_controller");
             this.router.switch_to("select_car_controller");
+            return;
         }
 
-        this.redraw();
     }.bind(this));
-    
-    // wire up widgets to activity
-    this.wire_up_widgets();
+
 };
 
 MainActivity.prototype.wire_up_widgets = function() {
@@ -45,7 +51,7 @@ MainActivity.prototype.wire_up_widgets = function() {
         this.ajax_requester.post('/game', [{game_id:1, game_stage:1}], 
             function() {
                 this.router.switch_to('select_car_controller');
-            }.bind(this));
+        }.bind(this));
 
     }.bind(this));
 };
