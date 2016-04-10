@@ -1,0 +1,48 @@
+
+        Webserver for our EECS 373 Final Project
+
+With this webserver we aim to control the main flow of the game such as
+starting off the game, and viewing the game events as they happen in a hope to
+bring about an Internet Of Things aspect into our presentation. 
+
+This directory contains the web app, written completely in JavaScript with a
+custom MVC framework (https://github.com/aary/jMVC) which utilizes jQuery and
+Handlebars for a more minimalistic feel than Hip.js the hip framework of the
+day for front end single page applications.  
+
+The API server is built on top of a MySQL database (in api/sql/) and served
+with the Flask framework in Python.  No production servers have been employed
+as of yet.  To run the server install the requirements in your virtual
+environment (to get a virtual environment for Python, type the following
+commands in this directory (i.e. webserver/)
+    
+    virtualenv .venv
+    source .venv/bin/activate
+    pip install -r requirements.txt
+
+And that should install all the requirements needed for deploying this
+project.  If you do not have MySQL, that will have to be installed seperately
+first.  If you are running a MacOS X the following video might helpful
+(https://www.youtube.com/watch?v=malU8RxzjWA), on Ubuntu apt-get should be
+helpful.  If you are on Windows, I have no useful advice.
+
+You can run the directory-as-a-module API server by typing 
+    
+    python api 8000
+
+To run the API server on port 8000, this is the default port for the webapp.
+It will send requests on this port.  To change this you will have to edit the
+`API_DOMAIN` variable in the `app/__init__.py` file.  Then finally to deploy
+the webapp you should type in 
+
+    python app
+
+and that will start the flask server that serves the webapp on your computer
+on port 5000.  So go on over to "http://localhost:5000" to interact with it
+
+
+        MySQL 
+
+The web app will be synchronized to the state of the MySQL tables so if you
+want to reset the state of the API server you should go in the api/sql folder
+and execute the `drop_create_load.sh` script
