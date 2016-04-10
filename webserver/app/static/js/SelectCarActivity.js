@@ -31,12 +31,12 @@ SelectCarActivity.prototype.on_show = function(optional_data) {
         if (this.game[0].game_stage > 1) {
             this.router.switch_to("start_game_controller");
         } else {
-            this.make_cascading_ajax_requests_and_redraw();
+            this.get_data_and_redraw();
         }
     }.bind(this));
 }
 
-SelectCarActivity.prototype.make_cascading_ajax_requests_and_redraw = function() {
+SelectCarActivity.prototype.get_data_and_redraw = function() {
 
     // get data from the API server
     this.ajax_requester.get("/car_type", function(data) {
