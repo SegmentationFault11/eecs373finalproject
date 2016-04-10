@@ -46,3 +46,15 @@ on port 5000.  So go on over to "http://localhost:5000" to interact with it
 The web app will be synchronized to the state of the MySQL tables so if you
 want to reset the state of the API server you should go in the api/sql folder
 and execute the `drop_create_load.sh` script
+
+        
+        Bootstrap design
+
+The web app is completely based on Bootstrap the front end CSS framework, as
+such I have written no CSS for this web app myself.  Only what is embedded in
+the HTML returned by the "/" route.  However there are several different
+options you can choose from to deploy this project.  The templates you can
+choose from are in the app/static/external/ folder named starting with the
+string "bootstrap".  Change any of those to be named "bootstrap.css" to make
+it the theme in use.  I can add this as a confifuration option easily later
+on.  But for now it is just as easy as this.
