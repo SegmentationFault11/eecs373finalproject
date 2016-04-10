@@ -1,6 +1,6 @@
+"use strict" 
+
 $(document).ready(function() {
-    // make all requests synchronous
-    // $.ajaxSetup({async:false});
 
     $('#home_controller').css('display', 'none');
     $('#select_car_controller').css('display', 'none');
@@ -17,22 +17,4 @@ $(document).ready(function() {
         'start_game_controller' : new StartGameActivity('start_game_controller', router)
     });
     router.route_to_current_activity();
-
-    this.number_of_requests = 1;
-    function wait_for(condition, milliseconds, callback) {
-
-        // if the condition is not met then wait and recurse, otherwise
-        // callback()
-        if (!condition()) {
-            setTimeout(function() {
-                wait_for(condition, milliseconds, callback);
-            }, milliseconds);
-
-        } else {
-            callback();
-        }
-    }
-    wait_for(function() { return this.number_of_requests === 0; }.bind(this), 100, 
-            function() { console.log("done!"); });
-    setTimeout(function() { --this.number_of_requests; }.bind(this), 2000);
 });

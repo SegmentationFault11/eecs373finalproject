@@ -36,38 +36,6 @@ SelectCarActivity.prototype.on_show = function(optional_data) {
     }.bind(this));
 }
 
-SelectCarActivity.prototype.wire_up_widgets = function() {
-
-    for (var i = 0; i < this.car_types.length; ++i) {
-
-        // run a closure so that the value of i is copied over
-        (function(i) {
-
-            this.select_car_buttons.push($("#button_select_car_" +
-                    this.car_types[i].car_type));
-
-            this.select_car_buttons[this.select_car_buttons.length - 1]
-            .click(function() {
-
-                this.make_post_request_to_url("/player_and_car", 
-                    [{player_id: this.current_player,
-                        car_type: this.car_types[i].car_type, car_health: 10,
-                        kills: 0, game_id: 1}
-                    ], function() {
-
-                        // redraw the screen
-                        this.select_car_buttons = [];
-                        this.router.switch_to("select_car_controller");
-
-                }.bind(this));
-
-            }.bind(this));
-
-        }).bind(this)(i);
-
-    }
-};
-
 SelectCarActivity.prototype.make_cascading_ajax_requests_and_redraw = function() {
 
     // get data from the API server
@@ -104,5 +72,37 @@ SelectCarActivity.prototype.redraw = function() {
 
     // since new views have been draws they need to be wired up
     this.wire_up_widgets();
+};
+
+SelectCarActivity.prototype.wire_up_widgets = function() {
+
+    for (var i = 0; i < this.car_types.length; ++i) {
+
+        // run a closure so that the value of i is copied over
+        (function(i) {
+
+            this.select_car_buttons.push($("#button_select_car_" +
+                    this.car_types[i].car_type));
+
+            this.select_car_buttons[this.select_car_buttons.length - 1]
+                .click(function() {
+
+                this.make_post_request_to_url("/player_and_car", 
+                    [{player_id: this.current_player,
+                        car_type: this.car_types[i].car_type, car_health: 10,
+                        kills: 0, game_id: 1}
+                    ], function() {
+
+                        // redraw the screen
+                        this.select_car_buttons = [];
+                        this.router.switch_to("select_car_controller");
+
+                }.bind(this));
+
+            }.bind(this));
+
+        }).bind(this)(i);
+
+    }
 };
 
