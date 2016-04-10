@@ -15,12 +15,12 @@ AjaxRequester.prototype.get = function(url_in, callback) {
     // add one to the number of requests here
     ++this.number_of_requests;
 
-    $.getJSON(url, function() {
+    $.getJSON(url_in, function(data) {
 
         // call the callback and then decrement the number of requests to show
         // that one request has finished
-        callback();
         --this.number_of_requests;
+        callback(data);
     }.bind(this));
 }
 
@@ -36,7 +36,7 @@ AjaxRequester.prototype.post = function(url_in, data, callback) {
     ++this.number_of_requests;
 
     $.ajax({
-        type: "POST", url: url,
+        type: "POST", url: url_in,
         contentType: "application/json", dataType: "JSON",
         data: JSON.stringify(data),
 
@@ -44,8 +44,8 @@ AjaxRequester.prototype.post = function(url_in, data, callback) {
 
             // call the callback and then decrement the number of requests to show
             // that one request has finished
-            callback();
             --this.number_of_requests;
+            callback(data);
         }.bind(this)
     });
 }
@@ -73,8 +73,8 @@ AjaxRequester.prototype.wait_for_all = function(callback) {
     }
 
     wait_for(function() { 
-        this.number_of_requests === 0; 
-    }.bind(this), 100, function() { 
+        return this.number_of_requests === 0; 
+    }.bind(this), 50, function() { 
         callback(); 
     });
 }
