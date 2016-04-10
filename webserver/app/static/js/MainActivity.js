@@ -3,6 +3,9 @@ function MainActivity(id_in, router_in) {
     // inheritance? Whatever the fuck this is
     Activity.call(this, id_in, router_in);
 
+    // get a new instance of an ajax requester
+    ajax_requester = new AjaxRequester();
+
     // The button to start the game
     this.start_button = {};
     this.game_data = {};
@@ -43,12 +46,15 @@ MainActivity.prototype.wire_up_widgets = function() {
         console.log("PRESSED START BUTTON!");
 
         // make ajax request to post a new game onto the server
-        this.make_post_request_to_url('/game', [{game_id:1, game_stage:1}]);
+        this.make_post_request_to_url('/game', [{game_id:1, game_stage:1}], 
+            function() {
+                this.router.switch_to('select_car_controller');
+            }.bind(this));
 
         // then switch to the other controller
         // console.log("MainActivity : Button #start_button pressed");
         // console.log("MainActivity : Switching to select_car_controller");
-        this.router.switch_to('select_car_controller');
+        // this.router.switch_to('select_car_controller');
     }.bind(this));
 };
 
