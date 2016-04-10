@@ -5,6 +5,10 @@ app = Flask(__name__)
 
 API_DOMAIN = "http://localhost:8000/"
 
+@app.route("/pictures/<picture_name>")
+def get_picture(picture_name):
+    return requests.get(API_DOMAIN + "pictures/" + picture_name).content
+
 @app.route("/")
 def web_page():
     return render_template("webapp.html")

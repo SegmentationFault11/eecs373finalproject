@@ -16,15 +16,15 @@ MainActivity.prototype.on_show = function(optional_data) {
     var data_from_get_request;
 
     // check if a game exists
-    $.getJSON("http://localhost:8000/game", function(data) {
+    $.getJSON("/game", function(data) {
         this.game_data = data;
-        console.log(data);
+        // console.log(data);
 
         // switch to other controller if a game has started in the backend
         if (!this.game_data || this.game_data.length == 0) {
-            console.log("MainActivity : Staying in current activity");
+            // console.log("MainActivity : Staying in current activity");
         } else {
-            console.log("MainActivity : Switching to select_car_controller");
+            // console.log("MainActivity : Switching to select_car_controller");
             this.router.switch_to("select_car_controller");
         }
 
@@ -40,20 +40,14 @@ MainActivity.prototype.wire_up_widgets = function() {
 
     this.start_button.click(function() {
 
-        // make ajax request to post a new game onto the server
-        $.ajax({
-            type: "POST", url:'/game',
-            contentType: "application/json; charset=utf-8", 
-            dataType: "json", data: JSON.stringify([{game_id:1, game_stage:1}]),
+        console.log("PRESSED START BUTTON!");
 
-            success: function (data) {
-                console.log(data);
-            }
-        });
+        // make ajax request to post a new game onto the server
+        this.make_post_request_to_url('/game', [{game_id:1, game_stage:1}]);
 
         // then switch to the other controller
-        console.log("MainActivity : Button #start_button pressed");
-        console.log("MainActivity : Switching to select_car_controller");
+        // console.log("MainActivity : Button #start_button pressed");
+        // console.log("MainActivity : Switching to select_car_controller");
         this.router.switch_to('select_car_controller');
     }.bind(this));
 };

@@ -149,6 +149,22 @@ Activity.prototype = {
         $(placeholder).html(compiled_html);
     },
 
+    make_post_request_to_url : function(url_in, data, callback) {
+        
+        // make post request
+        $.ajax({
+            type: "POST", url: url_in,
+            contentType: "application/json", dataType: "JSON", 
+            data: JSON.stringify(data),
+
+            success: function(data) {
+                callback();
+            }
+        });
+    },
+
+
+
     /**************************************************************************
      * PRIVATES
     /*************************************************************************/

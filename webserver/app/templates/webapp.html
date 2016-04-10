@@ -58,7 +58,7 @@
                 <!-- jumbotron -->
                 <div class="jumbotron">
                     <!-- the heading -->
-                    <h1>Yadle</h1>
+                    <h1>EECS 373 Project</h1>
 
                     <!-- description -->
                     <p>This is a simple hero unit, a simple jumbotron-style
@@ -66,7 +66,7 @@
                     information.</p>
                     <p>
                     <button id="start_button" class="btn
-                        btn-primary">Start game</button>
+                        btn-primary btn-lg">Start game</button>
                     </p>
                 </div> <!-- jumbotron -->
             </div>
@@ -76,13 +76,14 @@
         <div id="select_car_controller">
             <div class="container">
 
-                <div style="text-align:center;" class="row">
-                    <h1>Player 1 pick your car</h1><br>
-                </div>
-
                 {% raw %}
                 <script id="car_thumbnail_template"
                     type="text/x-handlebars-template">
+
+                    <div style="text-align:center;" class="row">
+                        <h1>Player {{current_player}} pick your car</h1><br>
+                    </div>
+
                     <div class="row">
                         {{#each car_types}}
                         <div class="col-xs-6 col-md-6">
@@ -90,7 +91,8 @@
                                 <a href="#"><img src="{{image_url}}"
                                     alt="..."></a>
                                 <h1>{{car_type}}</h1>
-                                <button 
+                                <button
+                                    id="button_select_car_{{car_type}}"
                                     class="btn btn-primary">Choose</button>
                             </div>
                         </div>
@@ -98,13 +100,50 @@
                     </div>
                 </script>
                 {% endraw %}
+
                 <div id="car_thumbnail_template_placeholder"></div>
             </div>
         </div>
 
-        <!-- the controller that has the game scores -->
-        <div id="game_progress_controller">
+        <!-- Starts the game progress controller, this is a stupid thing made
+        just to look nice -->
+        <div id="start_game_controller">
+            <div class="container">
+
+                <div class="row">
+                    <div style="text-align:left !important;" 
+                        class="col-md-8 col-md-offset-2">
+
+                        <h1>Rules of the game</h3>
+
+                        <h3>Object of the game</h3>
+                        <p>The object of the game is to kill as many opponents as
+                        you can!  You can achieve this by either ramming into the
+                        other car or by shooting the other car.  
+                        </p>
+                        <p>This game is free for all!  Feel free to let your
+                        competitive spirit take over.  Kill everyone else. 
+                        </p>
+                        <h3>Upgradable cars</h3>
+                        <p>The cars are industry standard X cars that you will be
+                        talking to via Sony PlayStation 2 controllers.  As you
+                        kill more people you will get more upgrades and your car
+                        will become more powerful.  Making it easier for you to
+                        kill the opponent!
+                        </p>
+
+                        <br><br>
+                        <h3>Are you ready to start the game?</h3>
+                        <button id="button_start_game" class="btn
+                            btn-success btn-lg">Start!</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
+
+        <!-- the controller that has the game scores -->
+        <div id="game_progress_controller"></div>
 
         <!-- footer -->
         <div class="footer">
@@ -123,6 +162,7 @@
         <script type="text/javascript" src="./static/js/Activity.js"></script>
         <script type="text/javascript" src="./static/js/MainActivity.js"></script>
         <script type="text/javascript" src="./static/js/SelectCarActivity.js"></script>
+        <script type="text/javascript" src="./static/js/StartGameActivity.js"></script>
 
     </body>
 

@@ -91,7 +91,16 @@ def player_and_car():
     if request.method == "GET":
         return get_request_with_class(PlayerAndCar)
     else:
-        return post_request_with_class(PlayerAndCar)
+        response = post_request_with_class(PlayerAndCar)
+        if 'player_id' in request.json[0] and 'car_type' in request.json[0] \
+        and 'car_health' in request.json[0] and 'kills' in request.json[0] \
+        and 'game_id' in request.json[0]:
+            if request.json[0]['player_id'] == 3:
+                print "GAME MOVED ON TO NEXT STAGE ", 2
+                execute_query("UPDATE Games SET game_stage=2 WHERE game_stage=1;",
+                        True)
+
+        return response
 
 # @api.route("/app")
 # def serve_webapp():
