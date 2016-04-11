@@ -60,14 +60,11 @@ vector<char> do_handshake(int api_server_socket) {
         handshake_request.end());
     SocketUtilities::send_all(api_server_socket, handshake_data);
 
-    // receive the JSON response, TODO I have used a bad technique for this
-    // receive, is it reliable?  Probably not.  I should look into ways to
-    // change this later on.  Try catch blocks should not be used to dictate
-    // logic
+    // receive the JSON response, 
     std::array<char, 1024> recv_buffer;
     int total_bytes_received {0};
     while(true) {
-        auto bytes_received = ::recv(api_server_socket, 
+        auto bytes_received = SocketUtilities::recv(api_server_socket, 
                 recv_buffer.data() + total_bytes_received, recv_buffer.size(), 0);
 
         // break if 0 bytes were received, throw error if -1 returned
