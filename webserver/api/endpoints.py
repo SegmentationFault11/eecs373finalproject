@@ -115,7 +115,7 @@ def event_information():
 
 @api.route("/open_api_connection")
 def open_api_connection():
-    return "hello there!"
+    return jsonify({"port":8080})
 
 # @api.route("/app")
 # def serve_webapp():
