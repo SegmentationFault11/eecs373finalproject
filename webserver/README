@@ -30,10 +30,11 @@ You can run the directory-as-a-module API server by typing
     
     python api 8000
 
-To run the API server on port 8000, this is the default port for the webapp.
-It will send requests on this port.  To change this you will have to edit the
-`API_DOMAIN` variable in the `app/__init__.py` file.  Then finally to deploy
-the webapp you should type in 
+To run the API server on port 8000 (be sure to initialize the MySQL server
+with some initial values, check the MySQL section below for more details on
+this), this is the default port for the webapp.  It will send requests on this
+port.  To change this you will have to edit the `API_DOMAIN` variable in the
+`app/__init__.py` file.  Then finally to deploy the webapp you should type in
 
     python app
 
