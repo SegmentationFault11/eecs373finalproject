@@ -32,3 +32,8 @@ CREATE TABLE PlayerAndCars
     PRIMARY KEY(player_id)
 );
 
+CREATE TABLE Events
+(
+    information VARCHAR(255),
+    timestamp VARCHAR(255)
+);

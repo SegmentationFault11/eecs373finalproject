@@ -25,6 +25,12 @@ SelectCarActivity.prototype.on_show = function(optional_data) {
     this.ajax_requester.get("/game", function(data) {
         this.game = data;
     }.bind(this));
+    this.ajax_requester.get("/car_type", function(data) {
+        this.car_types = data;
+    }.bind(this));
+    this.ajax_requester.get("/player_and_car", function(data) {
+        this.player_and_cars = data;
+    }.bind(this));
 
     this.ajax_requester.wait_for_all(function() {
 
@@ -34,7 +40,11 @@ SelectCarActivity.prototype.on_show = function(optional_data) {
 
             // this will wait for one more ajax call to go through and then
             // display the views on the screen
-            this.get_data_redraw_wire_show();
+            this.current_player = this.player_and_cars.length + 1;
+
+            this.redraw();
+            this.wire_up_widgets();
+            this.show_views();
         }
     }.bind(this));
 }
@@ -42,21 +52,9 @@ SelectCarActivity.prototype.on_show = function(optional_data) {
 SelectCarActivity.prototype.get_data_redraw_wire_show = function() {
 
     // get data from the API server
-    this.ajax_requester.get("/car_type", function(data) {
-        this.car_types = data;
-    }.bind(this));
-    this.ajax_requester.get("/player_and_car", function(data) {
-        this.player_and_cars = data;
-    }.bind(this));
 
     // do this when the above two calls are complete
     this.ajax_requester.wait_for_all(function() {
-        this.current_player = this.player_and_cars.length + 1;
-
-        this.redraw();
-        this.wire_up_widgets();
-        this.show_views();
-
     }.bind(this));
 };
 

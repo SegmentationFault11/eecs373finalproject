@@ -101,6 +101,32 @@ class PlayerAndCar():
                         car_health = self.car_health, kills = self.kills,
                         game_id = self.game_id)
 
+class Event():
+    def __init__(self, tuple_in):
+        self.information = tuple_in[0]
+        self.timestamp = tuple_in[1]
+
+    def __repr__(self):
+        return "<EventInformation {tuple}>".format(tuple =
+                self.to_string_tuple())
+
+    def __str__(self):
+        return self.__repr__()
+
+    # JSON AND SQL METHODS
+    def to_json(self):
+        return {"information" : self.information, "timestamp" :
+                self.timestamp}
+    @staticmethod
+    def from_json(json):
+        try:
+            return EventInformation(json["information"], json["timestamp"])
+        except KeyError as ke:
+            raise KeyError("EventInformation cannot be constructed from json")
+    def to_string_tuple(self):
+        return "({information}, {timestamp})".format(information =
+                self.information, timestamp = self.timestamp)
+
 
 if __name__ == "__main__":
 

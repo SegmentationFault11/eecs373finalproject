@@ -76,6 +76,7 @@
         <div id="select_car_controller">
             <div class="container">
 
+                <!-- For Flask's render_template -->
                 {% raw %}
                 <script id="car_thumbnail_template"
                     type="text/x-handlebars-template">
@@ -88,8 +89,8 @@
                         {{#each car_types}}
                         <div class="col-xs-6 col-md-6">
                             <div class="thumbnail">
-                                <a href="#"><img src="{{image_url}}"
-                                    alt="..."></a>
+                                <img src="{{image_url}}"
+                                alt="...">
                                 <h1>{{car_type}}</h1>
                                 <button
                                     id="button_select_car_{{car_type}}"
@@ -145,28 +146,81 @@
         </div>
 
         <!-- the controller that has the game scores -->
-        <div id="game_progress_controller"></div>
-
-        <!-- footer -->
-        <div class="footer">
+        <div id="game_progress_controller">
             <div class="container">
-                <hr>
-                <p style="color:#817f7f">This project was developed by the
-                students in EECS 373 - Embedded Systems
-                <p style="color:#817f7f;">Copyright © 2015 EECS 373 Group,
-                University of Michigan</p>
-                <br>
-            </div>
+
+                <!-- For Flask's render_template -->
+                {% raw %}
+                <script id="player_progress_template"
+                    type="text/x-handlebars-template">
+
+                    <h2>Game statistics</h2>
+                    <div class="row">
+                        {{#each player_and_cars}}
+                        <div class="col-md-4">
+                            <div class="thumbnail" style="font-size:20px;">
+                                <h1>Player {{player_id}}</h1>
+                                <h4>{{car_type}}</h4>
+                                <strong>Health</strong> <div
+                                    id="health">9000</div>
+                                <strong>Kills</strong> <div
+                                    id="kills">25</div>
+                                <strong>Upgrades</strong> <div
+                                    id="upgrades">3</div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+
+                    <h2>Events log</h2>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="list-group">
+                                {{#each events}}
+                                <li class="list-group-item"><font
+                                    face="courier">{{timestamp}}</font>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    {{information}}</li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+
+                </script>
+                {% endraw %}
+
+                <div id="player_progress_template_placeholder"></div>
+
+            </div> <!-- Row -->
+        </div> <!-- container -->
+    </div>
+
+
+    <!-- footer -->
+    <div class="footer">
+        <div class="container">
+            <hr>
+            <p style="color:#817f7f">This project was developed by the
+            students in EECS 373 - Embedded Systems
+            <p style="color:#817f7f;">Copyright © 2015 EECS 373 Group,
+            University of Michigan</p>
+            <br>
         </div>
+    </div>
 
-        <script type="text/javascript" src="./static/js/script.js"></script>
-        <script type="text/javascript" src="./static/js/Router.js"></script>
-        <script type="text/javascript" src="./static/js/Activity.js"></script>
-        <script type="text/javascript" src="./static/js/MainActivity.js"></script>
-        <script type="text/javascript" src="./static/js/SelectCarActivity.js"></script>
-        <script type="text/javascript" src="./static/js/StartGameActivity.js"></script>
-        <script type="text/javascript" src="./static/js/AjaxRequester.js"></script>
+    <script type="text/javascript" src="./static/js/script.js"></script>
+    <script type="text/javascript" src="./static/js/Router.js"></script>
+    <script type="text/javascript" src="./static/js/Activity.js"></script>
+    <script type="text/javascript" src="./static/js/MainActivity.js"></script>
+    <script type="text/javascript" 
+        src="./static/js/SelectCarActivity.js"></script>
+    <script type="text/javascript" 
+        src="./static/js/StartGameActivity.js"></script>
+    <script type="text/javascript"
+        src="./static/js/GameProgressActivity.js"></script>
+    <script type="text/javascript" 
+        src="./static/js/AjaxRequester.js"></script>
 
-    </body>
+</body>
 
 </html>

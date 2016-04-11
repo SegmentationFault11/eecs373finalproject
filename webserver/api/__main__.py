@@ -12,4 +12,4 @@ if __name__ == "__main__":
         sys.stderr.write("Usage: python " + sys.argv[0] + " <port_number>\n")
         sys.exit(1)
 
-    api.run(debug = True, port = int(sys.argv[1]))
+    api.run(debug = True, port = int(sys.argv[1]), threaded = True)

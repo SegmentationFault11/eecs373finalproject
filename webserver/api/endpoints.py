@@ -9,6 +9,8 @@ def get_request_with_class(classname):
     """This function is used as an handle to handle a get request to all the
     endpoints here in this file."""
     
+    time.sleep(1)
+
     try:
         # execute_query("SELECT * FROM " + classname.__name__ + "s;")
         objects = [classname(object).to_json() \
@@ -101,6 +103,16 @@ def player_and_car():
                         True)
 
         return response
+
+@api.route("/events")
+@api_jsonify
+def event_information():
+    if request.method == "GET":
+        print "here"
+        return get_request_with_class(Event)
+    else:
+        return jsonify({"status":"post requests not allowed on route "
+            "/event_information"})
 
 # @api.route("/app")
 # def serve_webapp():

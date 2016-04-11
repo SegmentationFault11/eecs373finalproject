@@ -22,6 +22,7 @@ StartGameActivity.prototype.wire_up_widgets = function() {
 
     this.start_game_button.click(function() {
         alert("STARTED GAME!");
-    });
+        this.router.switch_to("game_progress_controller");
+    }.bind(this));
 };
 
