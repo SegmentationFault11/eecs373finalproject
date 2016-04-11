@@ -17,42 +17,42 @@ typedef enum {Tank, F1, Toyota, LOL, Script} vehicleT_t;
 typedef enum {single, burst, full_auto, laser} gunT_t;
 
 typedef struct Status {
-        uint8_t HP;
-            uint8_t lives;
-                uint8_t gameover;
-                    uint8_t hit_pending;
+	uint8_t HP;
+	uint8_t lives;
+	uint8_t gameover;
+	uint8_t hit_pending;
 } status_t;
 
 typedef struct Weapon {
-        gunT_t type;
-            uint8_t damage;
-                uint8_t reload_rate;
+	gunT_t type;
+	uint8_t damage;
+	uint8_t reload_rate;
 } weapon_t;
 
 typedef struct Performance {
-        float power_multiplier;
-            float steer_multiplier;
-                uint32_t impact_thresh;
-                    uint8_t weight;
-                        uint8_t upgrades_available;
+	float power_multiplier;
+	float steer_multiplier;
+	uint32_t impact_thresh;
+	uint8_t weight;
+	uint8_t upgrades_available;
 } performance_t;
 
 typedef struct Controller {
-        uint32_t pressed_buttons;
+	uint32_t pressed_buttons;
 } controller_t;
 
 
 typedef struct Vehicle {
-        uint8_t id;
-            uint8_t killer_id;
-                char name[50];
-                    uint8_t team;
+	uint8_t id;
+	uint8_t killer_id;
+	char name[50];
+	uint8_t team;
 
-                        vehicleT_t type;
-                            status_t status;
-                                performance_t performance;
-                                    weapon_t weapon;
-                                        controller_t controller;
+	vehicleT_t type;
+	status_t status;
+	performance_t performance;
+	weapon_t weapon;
+	controller_t controller;
 } vehicle_t;
 
 
@@ -76,4 +76,3 @@ void tmnt_vehicle();
 
 
 #endif /* VEHICLE_H_ */
-

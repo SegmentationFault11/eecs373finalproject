@@ -1,11 +1,13 @@
 #include "steering.h"
 
 extern struct Settings settings;
+extern struct Vehicle vehicle;
 
 // Steering functions
 void init_steering() {
 
 	// Configure the GPIO
+	MSS_GPIO_config(MSS_GPIO_0, MSS_GPIO_OUTPUT_MODE);
 	MSS_GPIO_config(MSS_GPIO_4, MSS_GPIO_INPUT_MODE);
 
 	// Enable GPIO interrupts
@@ -16,47 +18,42 @@ void init_steering() {
 
 	// Center wheels
 	*settings.steer_loc = 512;
-
-	// Print completion
-	printf("Steering initialized\r\n");
 }
 
-void start_steer() {
+inline void start_steer() {
 	*settings.steer_loc = 1<<21;
 }
 
-void kill_steer() {
+inline void kill_steer() {
 	*settings.steer_loc = 1<<22;
 }
 
-void set_steer(int angle) {
-	uint32_t des_pos = angle;
-
-	*settings.steer_loc = des_pos;
+inline void set_steer(int angle) {
+	*settings.steer_loc = (uint32_t)angle;
 }
 
+inline void center_steer() {
+	*settings.steer_loc = 512 + settings.steer_offset;
+}
 
-// Interrupt Handling
-void sample_int() {
-	uint16_t pot_pos = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_2"))>>2);
-	uint16_t x_acc = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_3"))>>4);
-	uint16_t y_acc = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_4"))>>4);
-	uint16_t z_acc = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_5"))>>4);
-
-	//printf("wheel loc = %" PRIu16 "\r\n", pot_pos);
-
-	*settings.steer_loc = pot_pos + (1<<20);
+inline void adjust_center(uint8_t amt) {
+	settings.steer_offset += amt;
 }
 
 void GPIO4_IRQHandler() {
 	MSS_GPIO_clear_irq(MSS_GPIO_4);
 
-	sample_int();
-}
+	uint16_t pot_pos = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_2"))>>2);
+	uint16_t x_acc = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_3"))>>4);
+	uint16_t y_acc = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_4"))>>4);
 
+	*settings.steer_loc = pot_pos + (1<<20);
 
-// Helper functions
-void angle2val(uint32_t des_pos, int angle) {
-	des_pos = angle;
+	decode_controller();
+
+	if ((x_acc + y_acc) > 280) {
+		printf("in int = %d\r\n", vehicle.performance.impact_thresh);
+	}
+
 }
 

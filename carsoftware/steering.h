@@ -3,26 +3,28 @@
 
 #include <stdio.h>
 #include <inttypes.h>
-#include "settings.h"
-#include "drivers/mss_gpio/mss_gpio.h"
 #include "drivers/mss_ace/mss_ace.h"
+#include "drivers/mss_uart/mss_uart.h"
+#include "drivers/mss_gpio/mss_gpio.h"
 
+#include "vehicle.h"
+#include "settings.h"
+#include "motor.h"
+#include "controller.h"
 
 // Steering functions
-void init_steering();
+inline void init_steering();
 
-void start_steer();
+inline void start_steer();
 
-void kill_steer();
+inline void kill_steer();
 
-void set_steer(int angle);
+inline void set_steer(int angle);
 
-// Interrupt Handling
-void sample_int();
+inline void center_steer();
 
-void GPIO1_IRQHandler();
+inline void adjust_center(uint8_t amt);
 
-// Helper functions
-void angle2val(uint32_t des_pos, int angle);
+void GPIO4_IRQHandler();
 
 #endif /* STEERING_H_ */
