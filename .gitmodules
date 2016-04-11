@@ -1,0 +1,3 @@
+[submodule "webserver/cppsockets"]
+	path = webserver/cppsockets
+	url = https://github.com/aary/cppsockets.git

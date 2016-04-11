@@ -9,8 +9,7 @@ def get_request_with_class(classname):
     """This function is used as an handle to handle a get request to all the
     endpoints here in this file."""
     
-    time.sleep(1)
-
+    time.sleep(10)
     try:
         # execute_query("SELECT * FROM " + classname.__name__ + "s;")
         objects = [classname(object).to_json() \
@@ -113,6 +112,10 @@ def event_information():
     else:
         return jsonify({"status":"post requests not allowed on route "
             "/event_information"})
+
+@api.route("/open_api_connection")
+def open_api_connection():
+    return "hello there!"
 
 # @api.route("/app")
 # def serve_webapp():
