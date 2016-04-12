@@ -33,8 +33,7 @@ set_interface_attribs (int fd, int speed, int parity)
 
         // tty.c_iflag &= ~(IXON | IXOFF | IXANY); // shut off xon/xoff ctrl
 
-        // tty.c_cflag |= (CLOCAL | CREAD);// ignore modem controls,
-        //                                 // enable reading
+        // Set no parity, two stop bits and some random flow control of output
         tty.c_cflag &= ~(PARENB | PARODD);      // shut off parity
         tty.c_cflag |= parity;
         tty.c_cflag |= CSTOPB;
