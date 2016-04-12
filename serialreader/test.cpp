@@ -79,7 +79,7 @@ int main() {
     set_interface_attribs (fd, B9600, 0);  // set speed to 115,200 bps, 8n1 (no parity)
     set_blocking (fd, 0);                // set no blocking
     
-    write (fd, "hello!\n", 7);           // send 7 character greeting
+    write (fd, "hello there!!\n", 7);           // send 7 character greeting
     
     usleep ((7 + 25) * 100);             // sleep enough to transmit the 7 plus
                                          // receive 25:  approx 100 uS per char transmit
