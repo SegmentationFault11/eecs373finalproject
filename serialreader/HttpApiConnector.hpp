@@ -40,7 +40,9 @@ public:
 
     /*
      * Starts off a new thread and makes a connection to the API server
-     * specified by the host and port to the factory of the connector
+     * specified by the host and port to the factory of the connector.  
+     *
+     * This function is non blocking.
      */
     void send_event_information(const string& information, 
             const string& timestamp);
@@ -49,4 +51,5 @@ private:
 
     static HttpApiConnector* static_instance;
     HttpApiConnector(const string& host, const string& port);
+    int new_port_for_api_server;
 };

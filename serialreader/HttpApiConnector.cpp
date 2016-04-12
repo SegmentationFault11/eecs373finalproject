@@ -6,9 +6,11 @@
 #include <string>
 #include <vector>
 #include <sys/socket.h>
+#include <thread>
 #include <algorithm>
 #include <unistd.h>
 #include <stdexcept>
+#include <cassert>
 #include <iostream>
 using std::string;
 using std::cout;
@@ -34,6 +36,12 @@ HttpApiConnector& HttpApiConnector::get_connector(const string& host,
     return *HttpApiConnector::static_instance;
 }
 
+HttpApiConnector& HttpApiConnector::get_connector() {
+
+    assert(HttpApiConnector::static_instance);
+    return *HttpApiConnector::static_instance;
+}
+
 HttpApiConnector::HttpApiConnector(const string& host, const string& port) {
 
     // open a socket with the API server
@@ -43,8 +51,18 @@ HttpApiConnector::HttpApiConnector(const string& host, const string& port) {
 
     // do the handshake and print the result of the handshake
     auto handshake_response = do_handshake(api_server_socket);
-    cout << "The new port number for the server is " << 
-        parse_port_from_api_server_response(handshake_response) << endl;
+    this->new_port_for_api_server = 
+        parse_port_from_api_server_response(handshake_response);
+    cout << "The new port number for the server is " 
+        << this->new_port_for_api_server << endl;
+}
+
+void HttpApiConnector::send_event_information(
+        __attribute__((unused)) const string& information, 
+        __attribute__((unused)) const string& timestamp) {
+    
+    // Start a thread to do the dirty work
+    // std::thread th
 }
 
 vector<char> do_handshake(int api_server_socket) {
