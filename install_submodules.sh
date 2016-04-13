@@ -1,8 +1,8 @@
 #! /bin/bash
 
 printf "Making submodules ...\n"
-cd cppsockets
+cd submodules/cppsockets
 make install
 
 printf "\nMoving submodules into their appropriate location ...\n"
-mv ./cppsockets.a ../SerialReader/
+mv ./cppsockets.a ../../serialreader/

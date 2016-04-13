@@ -1,0 +1,3 @@
+[submodule "submodules/cppsockets"]
+	path = submodules/cppsockets
+	url = https://github.com/aary/cppsockets.git
