@@ -51,5 +51,11 @@ private:
 
     static HttpApiConnector* static_instance;
     HttpApiConnector(const string& host, const string& port);
+
+    /* 
+     * These variables are used to identify the new server that has been
+     * "spawned"
+     */
     int new_port_for_api_server;
+    std::string new_host_for_api_server;
 };

@@ -115,8 +115,19 @@ def event_information():
 
 @api.route("/open_api_connection")
 def open_api_connection():
-    return jsonify({"port":8080})
+    """Returns the address of a new host which will be the endpoint for all
+    game specific communication to the client
+    """
 
-# @api.route("/app")
-# def serve_webapp():
-#     return render_template("webapp.html")
+    # spawn server
+    from threading import Thread
+    thread = Thread(target = start_message_server)
+    thread.daemon = True
+    thread.start()
+
+    return jsonify({"host":"localhost", "port":8080})
+
+def start_message_server():
+    while True:
+        time.sleep(1)
+        print "in server"

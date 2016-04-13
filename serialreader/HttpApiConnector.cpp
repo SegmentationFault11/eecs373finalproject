@@ -12,19 +12,23 @@
 #include <stdexcept>
 #include <cassert>
 #include <iostream>
+#include <map>
+#include <algorithm>
 using std::string;
 using std::cout;
 using std::endl;
 using std::vector;
 using std::stringstream;
+using std::map;
 
 /* initialize statics */
 HttpApiConnector* HttpApiConnector::static_instance = nullptr;
 
 /* Does the handshake with the server and return a vector with the response */
 static vector<char> do_handshake(int api_server_socket);
-/* Used to parse out the port number from a response from the api server */
-static int parse_port_from_api_server_response(const vector<char>& response);
+/* Used to parse out json from a response from the api server */
+static map<string, string> parse_json_from_api_server_response(
+        const vector<char>& response);
 
 HttpApiConnector& HttpApiConnector::get_connector(const string& host, 
         const string& port) {
@@ -50,11 +54,13 @@ HttpApiConnector::HttpApiConnector(const string& host, const string& port) {
             host.c_str(), port.c_str());
 
     // do the handshake and print the result of the handshake
-    auto handshake_response = do_handshake(api_server_socket);
-    this->new_port_for_api_server = 
-        parse_port_from_api_server_response(handshake_response);
-    cout << "The new port number for the server is " 
-        << this->new_port_for_api_server << endl;
+    auto handshake_response_buffer = do_handshake(api_server_socket);
+    auto json = parse_json_from_api_server_response(handshake_response_buffer);
+    this->new_host_for_api_server = json["host"];
+    this->new_port_for_api_server = stoi(json["port"]);
+    cout << "The new host is [" << this->new_host_for_api_server 
+        << "]" << endl;
+    cout << "The new port is [" << this->new_port_for_api_server << "]" << endl;
 }
 
 void HttpApiConnector::send_event_information(
@@ -78,6 +84,7 @@ vector<char> do_handshake(int api_server_socket) {
         handshake_request.end());
     SocketUtilities::send_all(api_server_socket, handshake_data);
 
+
     // receive the JSON response, 
     std::array<char, 1024> recv_buffer;
     int total_bytes_received {0};
@@ -93,29 +100,82 @@ vector<char> do_handshake(int api_server_socket) {
             throw std::runtime_error("Could not establish handshake with server");
         }
     }
+    cout << "DATA RECEIVED " << endl;
+    cout.write(recv_buffer.data(), total_bytes_received);
 
     return vector<char> (recv_buffer.data(), 
             recv_buffer.data() + total_bytes_received);
 }
 
-int parse_port_from_api_server_response(const vector<char>& response) {
+map<string, string> parse_json_from_api_server_response(
+        const vector<char>& response) {
     
+    // initialize the stringstream with the response
     stringstream ss_used_to_parse_json;
     string string_response (response.begin(), response.end());
     ss_used_to_parse_json << string_response;
+
+    // the set to be returned
+    map<string, string> to_return;
 
     // take out the crap, i.e. read till the ':' in JSON and then read in the
     // integer.  This is because the JSON is of the form
     //     {"port":8080}
     int port_number_for_new_server;
+    string host_for_new_server;
+
+    // THIS IS NASTY! TODO PLEASE FUCKING CHANGE THIS
     getline(ss_used_to_parse_json, string_response, '{');
     getline(ss_used_to_parse_json, string_response, ':');
-    ss_used_to_parse_json >> port_number_for_new_server;
+    if (string_response.find("port") != string::npos) {
 
-    // if reading in the port number failed then throw a runtime error
-    if (!ss_used_to_parse_json) {
-        throw std::runtime_error("Could not parse out the new port number for "
-                "the sub-API server");
+        // if reading in the port number failed then throw a runtime error
+        if (!ss_used_to_parse_json) {
+            throw std::runtime_error("Could not parse the address for the "
+                    "new API server");
+        }
+
+        getline(ss_used_to_parse_json, string_response, ',');
+        stringstream temp_ss;
+        temp_ss << string_response;
+        temp_ss >> port_number_for_new_server;
+        to_return["port"] = std::to_string(port_number_for_new_server);
+
+        getline(ss_used_to_parse_json, string_response, ':');
+        if (!ss_used_to_parse_json) {
+            throw std::runtime_error("Could not parse the address for the "
+                    "new API server");
+        }
+        ss_used_to_parse_json >> host_for_new_server;
+        to_return["host"] = host_for_new_server;
+
+    } else {
+
+        // if reading in the port number failed then throw a runtime error
+        if (!ss_used_to_parse_json) {
+            throw std::runtime_error("Could not parse out the new port number for "
+                    "the sub-API server");
+        }
+
+        getline(ss_used_to_parse_json, string_response, ',');
+        stringstream temp_ss;
+        temp_ss << string_response;
+        temp_ss >> host_for_new_server;
+        to_return["host"] = host_for_new_server;
+
+        getline(ss_used_to_parse_json, string_response, ':');
+        if (!ss_used_to_parse_json) {
+            throw std::runtime_error("Could not parse the address for the "
+                    "new API server");
+        }
+        ss_used_to_parse_json >> host_for_new_server;
+        to_return["port"] = host_for_new_server;
+
     }
-    return port_number_for_new_server;
+
+    // get reference and then remove
+    string& host = to_return["host"];
+    host.erase(std::remove_if(host.begin(), host.end(), 
+                [](char ch) { return ch == '\"'; }), host.end());
+    return to_return;
 }
