@@ -3,7 +3,7 @@
 extern struct Settings settings;
 extern struct Vehicle vehicle;
 
-void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
+inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	init_steering();
 	init_motor();
 	init_controller();
@@ -11,6 +11,7 @@ void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	vehicle.id = id;
 	vehicle.type = intype;
 	vehicle.team = team;
+	vehicle.last_hit_id = 69;
 
 	vehicle.status.gameover = 0;
 	vehicle.performance.steer_multiplier = 1.f;
@@ -20,11 +21,10 @@ void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	vehicle.status.lives = DEFAULT_LIVES;
 
 
-	void init_base_stats();
+	init_base_stats();
 }
 
-void init_base_stats() {
-	vehicle.killer_id = 69;
+inline void init_base_stats() {
 	if (vehicle.type == Tank) {
 		vehicle.status.HP = TANK_BASE_HEALTH;
 		vehicle.performance.power_multiplier = TANK_BASE_POWER;
@@ -62,7 +62,7 @@ void init_base_stats() {
 	}
 }
 
-void receive_upgrade(uint8_t num) {
+inline void receive_upgrade(uint8_t num) {
 	if (vehicle.performance.upgrades_available + num > 5) {
 		vehicle.performance.upgrades_available = 5;
 	}
@@ -74,7 +74,7 @@ void receive_upgrade(uint8_t num) {
 	}
 }
 
-void upgrade_motor() {
+inline void upgrade_motor() {
 	if (vehicle.type == Tank) {
 		if (vehicle.performance.power_multiplier < TANK_MAX_POWER)
 			vehicle.performance.power_multiplier += TANK_INCR_POWER;
@@ -97,7 +97,7 @@ void upgrade_motor() {
 	}
 }
 
-void upgrade_gun() {
+inline void upgrade_gun() {
 	if (vehicle.weapon.type == single) {
 		vehicle.weapon.type = burst;
 	}
@@ -123,7 +123,7 @@ void upgrade_gun() {
 	}
 }
 
-void restore_health() {
+inline void restore_health() {
 	if (vehicle.type == Tank) {
 		vehicle.status.HP = TANK_BASE_HEALTH;
 	}
@@ -141,9 +141,8 @@ void restore_health() {
 	}
 }
 
-void revive_vehicle() {
-	kill_steer();
-	kill_motor();
+inline void deathed() {
+	tmnt_vehicle();
 
 	// Send message of killer to server
 
@@ -161,7 +160,7 @@ void revive_vehicle() {
 	}
 }
 
-void tmnt_vehicle() {
+inline void tmnt_vehicle() {
 	kill_steer();
 	kill_motor();
 }
