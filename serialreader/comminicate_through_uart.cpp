@@ -10,6 +10,51 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+/* Sets interface things, like the parity, baudrate, stop bits */
+static int set_interface_attribs (int fd, int speed, int parity);
+/* Sets the file descriptor as blocking if should_block is 1 */
+static void set_blocking (int fd, int should_block);
+
+int main() {
+    const char *portname = "/dev/cu.usbserial-A603H8A5";
+    int fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
+    if (fd < 0) {
+        cerr << "error " << errno << "from tcgetattr" << endl;
+        return 1;
+    }
+
+    // set BAUDrate as 9600, parity 0 and two stop bits
+    set_interface_attribs(fd, B9600, 0); 
+    // set non blocking
+    set_blocking(fd, 0); 
+
+    char receive_buffer [10000];
+    while (true) {
+
+        // write UART
+        write(fd, "hello there!!\n", 14); 
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        // read
+        int received_till_now{0};
+        int received{0};
+        while ( (received = read(fd, receive_buffer + received_till_now,
+                        sizeof(receive_buffer) - received_till_now)) ) {
+            received_till_now += received;
+        }
+
+        // print received data
+        if (received_till_now) {
+            cout << "Received " << received_till_now << " bytes" << endl;
+            cout.write(receive_buffer, received_till_now);
+            cout << endl;
+        }
+    }
+
+    return 0;
+}
+
+
 int set_interface_attribs (int fd, int speed, int parity) {
 
     termios tty;
@@ -57,8 +102,7 @@ int set_interface_attribs (int fd, int speed, int parity) {
     return 0;
 }
 
-void set_blocking (int fd, int should_block)
-{
+void set_blocking (int fd, int should_block) {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
     if (tcgetattr (fd, &tty) != 0) {
@@ -75,42 +119,3 @@ void set_blocking (int fd, int should_block)
     }
 }
 
-
-int main() {
-    const char *portname = "/dev/cu.usbserial-A603H8A5";
-    int fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
-    if (fd < 0) {
-        cerr << "error " << errno << "from tcgetattr" << endl;
-        return 1;
-    }
-
-    // set BAUDrate as 9600, parity 0 and two stop bits
-    set_interface_attribs(fd, B9600, 0); 
-    // set non blocking
-    set_blocking(fd, 0); 
-
-    char receive_buffer [10000];
-    while (true) {
-
-        // write UART
-        write(fd, "hello there!!\n", 14); 
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-
-        // read
-        int received_till_now{0};
-        int received{0};
-        while ( (received = read(fd, receive_buffer + received_till_now,
-                        sizeof(receive_buffer) - received_till_now)) ) {
-            received_till_now += received;
-        }
-
-        // print received data
-        if (received_till_now) {
-            cout << "Received " << received_till_now << " bytes" << endl;
-            cout.write(receive_buffer, received_till_now);
-            cout << endl;
-        }
-    }
-
-    return 0;
-}
