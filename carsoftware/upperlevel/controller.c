@@ -3,11 +3,11 @@
 extern struct Settings settings;
 extern struct Vehicle vehicle;
 
-void init_controller() {
+inline void init_controller() {
 	MSS_GPIO_config(MSS_GPIO_10, MSS_GPIO_INPUT_MODE);
 }
 
-void decode_controller() {
+inline void decode_controller() {
 	uint32_t bytemask1 = 0x000000FF;
 	uint32_t bytemask2 = 0x0000FF00;
 	uint32_t bytemask3 = 0x00FF0000;

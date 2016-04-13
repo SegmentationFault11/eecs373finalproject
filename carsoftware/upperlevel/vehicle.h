@@ -1,17 +1,7 @@
 #ifndef VEHICLE_H_
 #define VEHICLE_H_
 
-#include <inttypes.h>
-#include "drivers/mss_ace/mss_ace.h"
-#include "drivers/mss_uart/mss_uart.h"
-#include "drivers/mss_gpio/mss_gpio.h"
-
-
-#include "steering.h"
-#include "settings.h"
-#include "motor.h"
-#include "controller.h"
-#include "performance.h"
+#include "headers.h"
 
 typedef enum {Tank, F1, Toyota, LOL, Script} vehicleT_t;
 typedef enum {single, burst, full_auto, laser} gunT_t;
@@ -44,7 +34,7 @@ typedef struct Controller {
 
 typedef struct Vehicle {
 	uint8_t id;
-	uint8_t killer_id;
+	uint8_t last_hit_id;
 	char name[50];
 	uint8_t team;
 
@@ -58,21 +48,21 @@ typedef struct Vehicle {
 
 
 // Member functions
-void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team);
+inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team);
 
-void init_base_stats();
+inline void init_base_stats();
 
-void receive_upgrade(uint8_t num);
+inline void receive_upgrade(uint8_t num);
 
-void upgrade_motor();
+inline void upgrade_motor();
 
-void upgrade_gun();
+inline void upgrade_gun();
 
-void restore_health();
+inline void restore_health();
 
-void revive_vehicle();
+inline void deathed();
 
-void tmnt_vehicle();
+inline void tmnt_vehicle();
 
 
 #endif /* VEHICLE_H_ */

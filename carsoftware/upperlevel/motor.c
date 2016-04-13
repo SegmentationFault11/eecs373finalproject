@@ -1,6 +1,7 @@
 #include "motor.h"
 
 extern struct Settings settings;
+extern struct Vehicle vehicle;
 
 void init_motor() {
 	// Start motor
@@ -19,5 +20,5 @@ void kill_motor() {
 }
 
 void set_motor(int speed) {
-	*settings.motor_loc = speed;
+	*settings.motor_loc = speed*vehicle.performance.power_multiplier;
 }
