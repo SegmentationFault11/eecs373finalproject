@@ -7,6 +7,7 @@ inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	init_steering();
 	init_motor();
 	init_controller();
+	init_receiver();
 
 	vehicle.id = id;
 	vehicle.type = intype;

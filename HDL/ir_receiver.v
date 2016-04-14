@@ -1,4 +1,4 @@
-module ir_receiver(PCLK,ir_recv,start_bit,ir_recv_sync,GOT_HIT,
+module ir_receiver(PCLK,ir_recv,start_bit,GOT_HIT,
                     PENABLE,
 					PSEL,
 					PRESETN,
@@ -27,7 +27,7 @@ output reg start_bit;
 reg [4:0] bit_pos = 10;
 reg [10:0] DATA_RECEIVED = 0;
 reg [31:0] count4 = 0;
-output wire ir_recv_sync;
+wire ir_recv_sync;
 wire ir_temp;
 output reg GOT_HIT = 0;
 reg [3:0] count5;
