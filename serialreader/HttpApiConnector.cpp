@@ -1,4 +1,5 @@
 #include "HttpApiConnector.hpp"
+#include "SerialDataParser.hpp"
 #include <cppsockets/SocketUtilities.hpp>
 #include <cppsockets/SocketRAII.hpp>
 #include <array>
@@ -29,6 +30,10 @@ static vector<char> do_handshake(int api_server_socket);
 /* Used to parse out json from a response from the api server */
 static map<string, string> parse_json_from_api_server_response(
         const vector<char>& response);
+
+/* Used to send data over to the address and port received from the server */
+void send_to_server(string address, string port, 
+        string information, string timestamp);
 
 HttpApiConnector& HttpApiConnector::get_connector(const string& host, 
         const string& port) {
@@ -63,12 +68,54 @@ HttpApiConnector::HttpApiConnector(const string& host, const string& port) {
     cout << "The new port is [" << this->new_port_for_api_server << "]" << endl;
 }
 
-void HttpApiConnector::send_event_information(
-        __attribute__((unused)) const string& information, 
-        __attribute__((unused)) const string& timestamp) {
+void HttpApiConnector::send_event_information(const string& information, 
+        const string& timestamp) {
     
     // Start a thread to do the dirty work
-    // std::thread th
+    std::thread th(send_to_server, this->new_host_for_api_server, 
+            std::to_string(this->new_port_for_api_server), information, timestamp);
+    th.detach();
+}
+
+void HttpApiConnector::detach_accept_callback(
+        void (*callback) (std::vector<uint8_t>)) {
+
+    // start server on thread
+    auto server_func = [callback]() {
+        while(true) {
+            SerialDataParser parser;
+            using SocketUtilities::SocketRAII;
+            SocketRAII server_sock = SocketUtilities::create_server_socket("8070");
+            SocketRAII client_sock = accept(server_sock);
+
+            int n{-1};
+            while(!parser && n) {
+                char ch;
+                n = SocketUtilities::recv(client_sock, &ch, 1);
+                parser.process_byte(ch);
+            }
+
+            if (!parser) { throw std::runtime_error("Incomplete data received"); }
+            else { callback(parser.get_data()); }
+        }
+    };
+    std::thread th(server_func);
+    th.detach();
+}
+
+void send_to_server(string address, string port, 
+        string information, string timestamp) {
+
+    using SocketRAII = SocketUtilities::SocketRAII;
+    SocketRAII sock = SocketUtilities::create_client_socket(
+            address.c_str(), port.c_str());
+
+    string to_send = information + string{","} + timestamp; 
+    int length = to_send.size();
+    to_send = std::to_string(length) + string(1, '\0') + to_send;
+
+    std::vector<char> data_to_send (to_send.begin(), to_send.end());
+    send_all(sock, data_to_send);
 }
 
 vector<char> do_handshake(int api_server_socket) {

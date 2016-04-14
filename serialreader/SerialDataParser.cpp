@@ -1,9 +1,12 @@
 #include "SerialDataParser.hpp"
+#include <iostream>
 #include <vector>
 #include <cstdint>
 #include <string>
 using std::vector;
 using std::string;
+using std::cout;
+using std::endl;
 
 SerialDataParser::SerialDataParser() : state{State::READING_SIZE}, 
     message_length{-1}, current_position{0} {}
@@ -30,12 +33,10 @@ void SerialDataParser::process_byte(uint8_t byte) {
             
             // shift state
             this->state = State::READING_DATA;
-            ++this->current_position;
             return;
         }
 
         this->data.push_back(byte);
-        ++this->current_position;
         break;
 
     case (State::READING_DATA):

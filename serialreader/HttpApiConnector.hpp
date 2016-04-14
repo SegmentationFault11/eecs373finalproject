@@ -20,7 +20,9 @@
  *     table and an object will be of the format 
  *     {"information": "<info>","timestamp": "<timestamp>"}
  */
+#include <vector>
 #include <string>
+#include <cstdint>
 using std::string;
 
 class HttpApiConnector {
@@ -46,6 +48,9 @@ public:
      */
     void send_event_information(const string& information, 
             const string& timestamp);
+
+    /* Use to accept a message on a socket */
+    void detach_accept_callback(void (*callback) (std::vector<uint8_t>));
 
 private:
 

@@ -9,13 +9,27 @@
 #include <fcntl.h>
 #include <thread>
 #include "AsyncSerialCommunicator.hpp"
+#include "HttpApiConnector.hpp"
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::string;
 using std::vector;
 
+void notify_through_serial(vector<data> message);
+
 int main() {
+
+    // if (argc != 3) {
+    //     cerr << "Usage : " << argv[0] << " <api_server_hostname> <port>" << endl;
+    //     return 1;
+    // }
+
+    // // do the HTTP handshake
+    // HttpApiConnector& connector = 
+    //     HttpApiConnector::get_connector(argv[1], argv[2]);
+
+    // connector.detach_and_set_callback(notify_through_serial);
 
     AsyncSerialCommunicator& communicator = 
         AsyncSerialCommunicator::get_serial_reader();

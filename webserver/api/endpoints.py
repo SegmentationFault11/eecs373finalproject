@@ -1,5 +1,5 @@
 import json
-from flask import jsonify, request, render_template
+from flask import jsonify, request, render_template, abort
 from __init__ import api, mysql, execute_query
 from db_models import *
 from decorators import api_jsonify
@@ -72,7 +72,12 @@ def game():
     if request.method == "GET":
         return get_request_with_class(Game)
     elif request.method == "POST":
-        return post_request_with_class(Game)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(('localhost', 8070))
+        sock.sendall(b'4\0aary')
+
+        response =  post_request_with_class(Game)
+        return response
     else:
         return delete_request_with_class(Game)
 
@@ -149,5 +154,5 @@ def start_message_server(address, port_number):
 
     while True:
         client_connection, client_address = listen_socket.accept()
-        print "got connection"
+        
         client_connection.close()
