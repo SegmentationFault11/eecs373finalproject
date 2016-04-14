@@ -46,8 +46,7 @@ public:
      *
      * This function is non blocking.
      */
-    void send_event_information(const string& information, 
-            const string& timestamp);
+    void send_event_information(const string& information);
 
     /* Use to accept a message on a socket */
     void detach_accept_callback(void (*callback) (std::vector<uint8_t>));

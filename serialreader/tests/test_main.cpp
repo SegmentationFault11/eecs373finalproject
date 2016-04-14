@@ -29,7 +29,9 @@ int main(int argc, char** argv) {
 }
 
 void print_message(vector<uint8_t> message) {
+    HttpApiConnector& connector = HttpApiConnector::get_connector();
     for (char ch : message) {
         cout << ch;
     } cout << endl;
+    connector.send_event_information("1 k player 2!!");
 }

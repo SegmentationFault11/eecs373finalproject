@@ -74,7 +74,7 @@ def game():
     elif request.method == "POST":
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect(('localhost', 8070))
-        sock.sendall(b'4\0aary')
+        sock.sendall(b'5\0start')
 
         response =  post_request_with_class(Game)
         return response
@@ -154,5 +154,9 @@ def start_message_server(address, port_number):
 
     while True:
         client_connection, client_address = listen_socket.accept()
-        
+        request = client_connection.recv(24)
+        timestamp = request[0:9]
+        information = request[10:23]
+        print "timestamp is ", timestamp
+        print "information is ", information
         client_connection.close()

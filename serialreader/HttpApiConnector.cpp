@@ -33,7 +33,7 @@ static map<string, string> parse_json_from_api_server_response(
 
 /* Used to send data over to the address and port received from the server */
 void send_to_server(string address, string port, 
-        string information, string timestamp);
+        string information);
 
 HttpApiConnector& HttpApiConnector::get_connector(const string& host, 
         const string& port) {
@@ -68,12 +68,11 @@ HttpApiConnector::HttpApiConnector(const string& host, const string& port) {
     cout << "The new port is [" << this->new_port_for_api_server << "]" << endl;
 }
 
-void HttpApiConnector::send_event_information(const string& information, 
-        const string& timestamp) {
+void HttpApiConnector::send_event_information(const string& information) {
     
     // Start a thread to do the dirty work
     std::thread th(send_to_server, this->new_host_for_api_server, 
-            std::to_string(this->new_port_for_api_server), information, timestamp);
+            std::to_string(this->new_port_for_api_server), information);
     th.detach();
 }
 
@@ -104,15 +103,14 @@ void HttpApiConnector::detach_accept_callback(
 }
 
 void send_to_server(string address, string port, 
-        string information, string timestamp) {
+        string information) {
 
     using SocketRAII = SocketUtilities::SocketRAII;
     SocketRAII sock = SocketUtilities::create_client_socket(
             address.c_str(), port.c_str());
 
-    string to_send = information + string{","} + timestamp; 
-    int length = to_send.size();
-    to_send = std::to_string(length) + string(1, '\0') + to_send;
+    string information_cut = string(information.begin(), information.begin() + 14);
+    string to_send = std::to_string(time(0)) + information_cut;
 
     std::vector<char> data_to_send (to_send.begin(), to_send.end());
     send_all(sock, data_to_send);

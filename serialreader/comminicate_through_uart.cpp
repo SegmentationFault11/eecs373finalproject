@@ -17,19 +17,19 @@ using std::string;
 using std::vector;
 
 void notify_through_serial(vector<data> message);
+void print_message(vector<uint8_t> message);
 
 int main() {
 
-    // if (argc != 3) {
-    //     cerr << "Usage : " << argv[0] << " <api_server_hostname> <port>" << endl;
-    //     return 1;
-    // }
 
-    // // do the HTTP handshake
-    // HttpApiConnector& connector = 
-    //     HttpApiConnector::get_connector(argv[1], argv[2]);
-
-    // connector.detach_and_set_callback(notify_through_serial);
+    // set up the connection to server
+    if (argc != 3) {
+        cerr << "Usage : " << argv[0] << " <api_server_hostname> <port>" << endl;
+        return 1;
+    }
+    __attribute__((unused)) HttpApiConnector& connector = 
+        HttpApiConnector::get_connector(argv[1], argv[2]);
+    connector.detach_accept_callback(print_message);
 
     AsyncSerialCommunicator& communicator = 
         AsyncSerialCommunicator::get_serial_reader();
@@ -57,3 +57,7 @@ int main() {
     return 0;
 }
 
+void print_message(vector<uint8_t> message) {
+    AsyncSerialCommunicator& communicator = 
+        AsyncSerialCommunicator::get_serial_reader();
+}
