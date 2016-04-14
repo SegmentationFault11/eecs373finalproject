@@ -4,6 +4,7 @@ from __init__ import api, mysql, execute_query
 from db_models import *
 from decorators import api_jsonify
 import time
+import socket
 
 def get_request_with_class(classname):
     """This function is used as an handle to handle a get request to all the
@@ -119,15 +120,34 @@ def open_api_connection():
     game specific communication to the client
     """
 
-    # spawn server
+    # spawn server which is least busy
+    (address, port, number_of_connections) = \
+        execute_query("SELECT * FROM Servers ORDER BY "\
+            "Servers.number_of_connections ASC LIMIT 1")[0]
+    # make it busier
+    execute_query(("UPDATE Servers SET Servers.number_of_connections = "
+            "number_of_connections + 1 WHERE Servers.address='{address}' and "
+            "Servers.port='{port}';").format(address = address, port = port), \
+            True)
+
     from threading import Thread
-    thread = Thread(target = start_message_server)
+    thread = Thread(target = start_message_server, args = (address, port))
     thread.daemon = True
     thread.start()
 
-    return jsonify({"host":"localhost", "port":8080})
+    return jsonify({"host":"localhost", "port":port})
 
-def start_message_server():
+def start_message_server(address, port_number):
+
+    REQUEST_QUEUE_SIZE = 5
+    self_server_address = (address, port_number)
+    listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    listen_socket.bind(self_server_address)
+    listen_socket.listen(REQUEST_QUEUE_SIZE)
+    print "Spawned server on address ", self_server_address
+
     while True:
-        time.sleep(1)
-        print "in server"
+        client_connection, client_address = listen_socket.accept()
+        print "got connection"
+        client_connection.close()

@@ -37,3 +37,12 @@ CREATE TABLE Events
     information VARCHAR(255),
     timestamp VARCHAR(255)
 );
+
+CREATE TABLE Servers
+(
+    address CHAR(100),
+    port INT,
+    number_of_connections INT,
+
+    PRIMARY KEY(address, port)
+);
