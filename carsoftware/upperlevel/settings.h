@@ -12,7 +12,7 @@ typedef struct Settings {
 	uint32_t* receiver_loc;
 
 	// Steering offset
-	uint8_t steer_offset;
+	int8_t steer_offset;
 } settings_t;
 
 inline void init_settings();

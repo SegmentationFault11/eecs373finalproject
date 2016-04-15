@@ -14,6 +14,7 @@ typedef struct Status {
 } status_t;
 
 typedef struct Weapon {
+	uint32_t count;
 	gunT_t type;
 	uint8_t damage;
 	uint8_t reload_rate;

@@ -2,7 +2,7 @@
 #define PERFORMANCE_H_
 
 // General statistics
-#define DEFAULT_LIVES 1
+#define DEFAULT_LIVES 2
 
 
 // Tank statistics
@@ -58,11 +58,11 @@
 #define SCRIPT_BASE_POWER 		1
 #define SCRIPT_BASE_WEIGHT 		255
 #define SCRIPT_IMPACT_THRESH 	1000
-#define SCRIPT_BASE_DAMAGE		20
+#define SCRIPT_BASE_DAMAGE		10
 
 #define SCRIPT_INCR_POWER		0
 #define SCRIPT_MAX_POWER		1.0
-#define SCRIPT_INCR_DAMAGE		0
+#define SCRIPT_INCR_DAMAGE		1
 #define SCRIPT_MAX_DAMAGE		255
 
 #endif /* PERFORMANCE_H_ */

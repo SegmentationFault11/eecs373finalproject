@@ -20,6 +20,7 @@ inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	vehicle.weapon.type = single;
 	vehicle.weapon.reload_rate = 0;
 	vehicle.status.lives = DEFAULT_LIVES;
+	vehicle.weapon.count = 200000;
 
 
 	init_base_stats();
@@ -155,6 +156,7 @@ inline void deathed() {
 		--vehicle.status.lives;
 		start_steer();
 		start_motor();
+		init_base_stats();
 	}
 	else {
 		vehicle.status.gameover = 1;

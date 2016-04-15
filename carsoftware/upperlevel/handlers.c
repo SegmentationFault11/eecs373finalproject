@@ -18,6 +18,11 @@ void GPIO4_IRQHandler() {
 		printf("in int = %d\r\n", vehicle.performance.impact_thresh);
 	}
 
+
+	if (vehicle.weapon.count == 0) shoot();
+	if (vehicle.weapon.type == burst && vehicle.weapon.count == 6000) shoot();
+	if (vehicle.weapon.type == burst && vehicle.weapon.count == 12000) shoot();
+	if (vehicle.weapon.count < 20000) ++vehicle.weapon.count;
 }
 
 void GPIO6_IRQHandler(void) {

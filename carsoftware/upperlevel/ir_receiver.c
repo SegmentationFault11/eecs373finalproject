@@ -10,8 +10,9 @@ inline void init_receiver() {
 
 inline void got_shot() {
 	uint32_t data = *settings.receiver_loc;
-	printf("GOT_SHOT: 0x%08x\r\n", data);
+	uint32_t damage = (data & 0b111110000) >> 4;
 	vehicle.last_hit_id = (data & 0b1100) >> 2;
-	vehicle.status.HP -= (data & 0b111110000) >> 4;
+	if (vehicle.status.HP < damage) deathed();
+	else vehicle.status.HP -= (data & 0b111110000) >> 4;
 	printf("HP = %d last_hit_id = %d\r\n", vehicle.status.HP, vehicle.last_hit_id);
 }
