@@ -9,6 +9,8 @@ function GameProgressActivity(id_in, router_in) {
     // the object that contains all the data on the page
     this.player_and_cars = [];
     this.events = [];
+    this.terminate_game_button = {};
+    this.restart_game_button = {};
 }
 
 GameProgressActivity.prototype = new Activity();
@@ -43,5 +45,21 @@ GameProgressActivity.prototype.redraw = function() {
             '#player_progress_template_placeholder', context);
 
 }
-GameProgressActivity.prototype.wire_up_widgets = function() {};
+GameProgressActivity.prototype.wire_up_widgets = function() {
+     
+    this.terminate_game_button = $("#terminate_button");
+    this.restart_button = $("#restart_button");
+
+    this.terminate_game_button.click(function() {
+        this.ajax_requester.get("/end_game", function() {
+            alert("Game Ended!");
+        });
+    }.bind(this));
+    this.restart_button.click(function() {
+        this.ajax_requester.get("/restart_game", function() {
+            location.reload();
+        }.bind(this));
+    }.bind(this));
+    console.log("HERE");
+};
 

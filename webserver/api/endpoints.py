@@ -6,6 +6,15 @@ from decorators import api_jsonify
 import time
 import socket
 
+def send_data_to_server(data):
+    """Sends data to the C++ server which is connected to the SmartFusion"""
+    assert len(data) == 14
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect(('localhost', 8070))
+    data = "14\0" + data
+    sock.sendall(data)
+
 def get_request_with_class(classname):
     """This function is used as an handle to handle a get request to all the
     endpoints here in this file."""
@@ -54,6 +63,21 @@ def delete_request_with_class(classname):
     except Exception as exc:
         return jsonify({ "status":str(exc) })
 
+@api.route("/start_game")
+def start_game():
+
+    barray = bytearray()
+    barray.append(0)
+    barray.append(1)
+    barray.append('g')
+    for i in range(0, 11):
+        barray.append(0)
+    send_data_to_server(barray)           
+
+    execute_query("update games set game_stage=3 where game_stage=2;",
+            True)
+    return jsonify({"status":"ok"})
+
 @api.route("/pictures/<picture_name>")
 def send_picture(picture_name):
     """Used to send the requested picture from the pictures folder."""
@@ -72,15 +96,27 @@ def game():
     if request.method == "GET":
         return get_request_with_class(Game)
     elif request.method == "POST":
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(('localhost', 8070))
-        sock.sendall(b'5\0start')
-
-        response =  post_request_with_class(Game)
-        return response
+        return post_request_with_class(Game)
     else:
         return delete_request_with_class(Game)
 
+@api.route("/end_game")
+def end_game():
+
+    barray = bytearray()
+    barray.append(0)
+    barray.append(1)
+    barray.append('t')
+    for i in range(0, 11):
+        barray.append(0)
+    send_data_to_server(barray)           
+
+    return jsonify({"status":"ok"})
+
+@api.route("/restart_game")
+def reset_state():
+    execute_query("DELETE FROM Games;", True)
+    return jsonify({"status":"ok"})
 
 @api.route("/game_update", methods = ["GET", "POST"])
 @api_jsonify
@@ -98,13 +134,24 @@ def player_and_car():
     if request.method == "GET":
         return get_request_with_class(PlayerAndCar)
     else:
-        response = post_request_with_class(PlayerAndCar)
         if 'player_id' in request.json[0] and 'car_type' in request.json[0] \
         and 'car_health' in request.json[0] and 'kills' in request.json[0] \
         and 'game_id' in request.json[0]:
+            car_to_byte = {"tank":1, "fast":2, "strong":3, "trump":4}
+
+            barray = bytearray()
+            barray.append(0)
+            barray.append(int(request.json[0]['player_id']) + 1)
+            barray.append('s')
+            barray.append(car_to_byte[request.json[0]["car_type"]])
+            for i in range(0, 10):
+                barray.append(0)
+            send_data_to_server(barray)           
+
+            response = post_request_with_class(PlayerAndCar)
             if request.json[0]['player_id'] == 3:
                 print "GAME MOVED ON TO NEXT STAGE ", 2
-                execute_query("UPDATE Games SET game_stage=2 WHERE game_stage=1;",
+                execute_query("update games set game_stage=2 where game_stage=1;",
                         True)
 
         return response
@@ -144,6 +191,9 @@ def open_api_connection():
 
 def start_message_server(address, port_number):
 
+    import time
+    import datetime
+
     REQUEST_QUEUE_SIZE = 5
     self_server_address = (address, port_number)
     listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -154,9 +204,19 @@ def start_message_server(address, port_number):
 
     while True:
         client_connection, client_address = listen_socket.accept()
-        request = client_connection.recv(24)
-        timestamp = request[0:9]
-        information = request[10:23]
-        print "timestamp is ", timestamp
-        print "information is ", information
+        request = client_connection.recv(14)
+        player_id = request[3]
+        player_health = request[4]
+        player_lives = request[5]
+        player_killer = request[6]
+        if player_health == 0:
+
+            # get the current time
+            ts = time.time()
+            st = datetime.datetime.fromtimestamp(ts)\
+                    .strftime('%Y-%m-%d %H:%M:%S')
+            execute_query("INSERT INTO Events VALUES ('{information}','{timestamp}');"\
+                    .format(information = "Player " + str(player_id) + " died!", \
+                                timestamp = st), True)
+
         client_connection.close()

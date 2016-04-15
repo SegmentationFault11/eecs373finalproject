@@ -16,7 +16,6 @@ using std::endl;
 using std::string;
 using std::vector;
 
-void notify_through_serial(vector<data> message);
 void print_message(vector<uint8_t> message);
 
 int main() {
