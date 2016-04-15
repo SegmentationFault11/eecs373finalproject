@@ -3,6 +3,8 @@
 struct Settings settings;
 struct Vehicle vehicle;
 
+#define VEHICLE_ID 1
+
 int main()
 {
 	printf("Program start\r\n");
@@ -15,7 +17,9 @@ int main()
 	init_settings();
 
 	// Initialize vehicle
-	init_vehicle(1, Script, 1);
+	init_vehicle(VEHICLE_ID, Script, VEHICLE_ID);
+
+	printf("Init complete\r\n");
 
 loop:
 	goto loop;

@@ -29,7 +29,7 @@ reg active;
 // Desired Position & Actual Position
 reg signed [10:0] des_pos, act_pos;
 
-parameter Pterm = 6;
+parameter Pterm = 10;
 parameter Iterm = 0.33;
 parameter Dterm = 55;
 
@@ -56,7 +56,7 @@ clk_div cd(PCLK, clk1k, SAMPLEINT);
 initial
 begin
     active = 0;
-    des_pos = 0;
+    des_pos = 512;
     act_pos = 0;
     motor_power = 0;
     E[0] = 0;
@@ -85,12 +85,12 @@ begin
             des_pos[9:0] <= PWDATA[9:0];
         end
         
-        if (PWDATA[21] == 1)
+        if (PWDATA[22] == 1)
         begin
             active <= 1;
         end
 
-        if (PWDATA[22] == 1)
+        if (PWDATA[23] == 1)
         begin
             active <= 0;
         end
@@ -172,7 +172,7 @@ module pwmsteer(input wire [31:0] power, output reg pwm_out, input clk);
 endmodule
 
 module clk_div(input clk, output reg sclk, output reg interrupt);
-    reg [15:0] count;
+    reg [31:0] count;
 
     always @(posedge clk)
     begin

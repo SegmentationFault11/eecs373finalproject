@@ -6,6 +6,8 @@
 // Steering functions
 inline void init_steering();
 
+inline void sample_steer();
+
 inline void start_steer();
 
 inline void kill_steer();

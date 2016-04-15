@@ -56,7 +56,7 @@
 // Script statistics
 #define SCRIPT_BASE_HEALTH 		255
 #define SCRIPT_BASE_POWER 		1
-#define SCRIPT_BASE_WEIGHT 		255
+#define SCRIPT_BASE_WEIGHT 		10
 #define SCRIPT_IMPACT_THRESH 	1000
 #define SCRIPT_BASE_DAMAGE		10
 

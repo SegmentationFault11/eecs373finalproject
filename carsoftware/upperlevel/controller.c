@@ -14,7 +14,6 @@ inline void decode_controller() {
 	uint32_t bytemask4 = 0xFF000000;
 
 	uint32_t curr_pressed = *settings.controller_loc;
-	//printf("ctl: 0x%08x\r\n", curr_pressed);
 	if (vehicle.controller.pressed_buttons != curr_pressed) {
 
 		// Set steering
@@ -24,7 +23,7 @@ inline void decode_controller() {
 		set_steer(steer_amount);
 
 		// Set motor
-		set_motor(((curr_pressed & bytemask4) >> 24)*vehicle.performance.power_multiplier);
+		set_motor(((curr_pressed & bytemask4) >> 24)*vehicle.performance.power_multiplier + (1-vehicle.performance.power_multiplier)*127);
 
 		// Set push buttons
 		if ((vehicle.controller.pressed_buttons & bytemask1) != (curr_pressed & bytemask1)) {
