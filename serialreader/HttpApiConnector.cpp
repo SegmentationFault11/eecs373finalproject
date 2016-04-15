@@ -76,7 +76,7 @@ void HttpApiConnector::send_event_information(const string& information) {
     th.detach();
 }
 
-void HttpApiConnector::detach_accept_callback(
+void HttpApiConnector::detach_set_callback(
         void (*callback) (std::vector<uint8_t>)) {
 
     // start server on thread

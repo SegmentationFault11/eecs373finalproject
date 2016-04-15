@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     // get the connector and set the callback for all events
     HttpApiConnector& connector = 
         HttpApiConnector::get_connector(argv[1], argv[2]);
-    connector.detach_accept_callback(print_message);
+    connector.detach_set_callback(print_message);
 
     // get the serial communicator
     AsyncSerialCommunicator& communicator = 

@@ -28,7 +28,7 @@ int main() {
     }
     __attribute__((unused)) HttpApiConnector& connector = 
         HttpApiConnector::get_connector(argv[1], argv[2]);
-    connector.detach_accept_callback(print_message);
+    connector.detach_set_callback(print_message);
 
     AsyncSerialCommunicator& communicator = 
         AsyncSerialCommunicator::get_serial_reader();
@@ -40,7 +40,7 @@ int main() {
         for (auto ch : data) {
             cout << ch;
         } cout << endl;
-        
+
         // send a reply for each incoming message, which is of length 14
         for (size_t i = 0; i < data.size() / 14; ++i) {
             string response = "indeedyourerig";
