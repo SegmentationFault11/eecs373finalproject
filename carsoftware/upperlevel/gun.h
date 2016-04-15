@@ -5,4 +5,6 @@
 
 inline void shoot();
 
+inline void trigger();
+
 #endif /* GUN_H_ */

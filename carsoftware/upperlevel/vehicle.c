@@ -4,11 +4,6 @@ extern struct Settings settings;
 extern struct Vehicle vehicle;
 
 inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
-	init_steering();
-	init_motor();
-	init_controller();
-	init_receiver();
-
 	vehicle.id = id;
 	vehicle.type = intype;
 	vehicle.team = team;
@@ -17,15 +12,21 @@ inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	vehicle.status.gameover = 0;
 	vehicle.performance.steer_multiplier = 1.f;
 	vehicle.performance.upgrades_available = 0;
-	vehicle.weapon.type = single;
 	vehicle.weapon.reload_rate = 0;
 	vehicle.status.lives = DEFAULT_LIVES;
-
+	vehicle.weapon.count = 200000;
 
 	init_base_stats();
+
+	init_steering();
+	init_motor();
+	center_acc();
+	init_controller();
+	init_receiver();
 }
 
 inline void init_base_stats() {
+	vehicle.weapon.type = single;
 	if (vehicle.type == Tank) {
 		vehicle.status.HP = TANK_BASE_HEALTH;
 		vehicle.performance.power_multiplier = TANK_BASE_POWER;
@@ -142,19 +143,27 @@ inline void restore_health() {
 	}
 }
 
+inline void take_damage(uint32_t damage) {
+	printf("took %d damage from %d health %d\r\n", damage, vehicle.last_hit_id, vehicle.status.HP);
+	if (vehicle.status.HP < damage) vehicle.status.HP = 0;
+	//else vehicle.status.HP -= damage;
+	send_event();
+	if (vehicle.status.HP == 0) deathed();
+}
+
 inline void deathed() {
 	tmnt_vehicle();
 
-	// Send message of killer to server
-
+	printf("death\r\n");
 	// Wait a few seconds
 	volatile uint32_t i = 0;
-	for (i = 0; i < 100000; ++i);
+	for (i = 0; i < 100000000; ++i);
 
 	if (vehicle.status.lives > 0) {
 		--vehicle.status.lives;
 		start_steer();
 		start_motor();
+		init_base_stats();
 	}
 	else {
 		vehicle.status.gameover = 1;

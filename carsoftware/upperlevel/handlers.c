@@ -3,21 +3,24 @@
 extern struct Settings settings;
 extern struct Vehicle vehicle;
 
+void GPIO3_IRQHandler() {
+
+}
+
 void GPIO4_IRQHandler() {
 	MSS_GPIO_clear_irq(MSS_GPIO_4);
 
-	uint16_t pot_pos = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_2"))>>2);
-	uint16_t x_acc = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_3"))>>4);
-	uint16_t y_acc = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_4"))>>4);
+	sample_steer();
 
-	*settings.steer_loc = pot_pos + (1<<20);
+	if (settings.acc_counter >> 3 == 1) {
+		sample_acc();
+		settings.acc_counter = 0;
+	}
+	else ++settings.acc_counter;
 
 	decode_controller();
 
-	if ((x_acc + y_acc) > 280) {
-		printf("in int = %d\r\n", vehicle.performance.impact_thresh);
-	}
-
+	trigger();
 }
 
 void GPIO6_IRQHandler(void) {

@@ -10,10 +10,10 @@ typedef struct Status {
 	uint8_t HP;
 	uint8_t lives;
 	uint8_t gameover;
-	uint8_t hit_pending;
 } status_t;
 
 typedef struct Weapon {
+	uint32_t count;
 	gunT_t type;
 	uint8_t damage;
 	uint8_t reload_rate;
@@ -59,6 +59,8 @@ inline void upgrade_motor();
 inline void upgrade_gun();
 
 inline void restore_health();
+
+inline void take_damage(uint32_t damage);
 
 inline void deathed();
 

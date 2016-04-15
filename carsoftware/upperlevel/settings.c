@@ -10,5 +10,9 @@ inline void init_settings() {
 	settings.receiver_loc = (uint32_t*)(0x40050300);
 	settings.gun_loc = (uint32_t*) (0x40050400);
 
+	settings.center_acc = 280;
+
 	settings.steer_offset = 0;
+
+	settings.acc_counter = 0;
 }
