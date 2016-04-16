@@ -34,8 +34,11 @@ inline void kill_steer() {
 	*settings.steer_loc = 1<<23;
 }
 
-inline void set_steer(int angle) {
-	*settings.steer_loc = (uint32_t)angle;
+inline void set_steer(int steer_amount) {
+	steer_amount += settings.steer_offset;
+	if (steer_amount > 1023) steer_amount = 1023;
+	else if (steer_amount < 0) steer_amount = 0;
+	*settings.steer_loc = (uint32_t)steer_amount;
 }
 
 inline void center_steer() {

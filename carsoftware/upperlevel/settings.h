@@ -12,7 +12,8 @@ typedef struct Settings {
 	uint32_t* receiver_loc;
 
 	// Center acceleration
-    uint16_t center_acc;
+    uint16_t center_acc_x;
+    uint16_t center_acc_y;
 
 	// Steering offset
 	int8_t steer_offset;

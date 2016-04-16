@@ -53,13 +53,13 @@ begin
         end
     end
 
-    if (inval > 128)
+    if (active & inval > 128)
     begin
         REARMOTOR1 <= 1;
         REARMOTOR2 <= 0;
         motor_power <= (inval - 128)*2;
     end
-    else if (inval < 128)
+    else if (active & inval < 128)
     begin
         REARMOTOR1 <= 0;
         REARMOTOR2 <= 1;
@@ -69,7 +69,7 @@ begin
     begin
         REARMOTOR1 <= 0;
         REARMOTOR2 <= 0;
-        motor_power <= 0;
+        motor_power <= 128;
     end
 end
 

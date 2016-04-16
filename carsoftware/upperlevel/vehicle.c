@@ -144,7 +144,7 @@ inline void restore_health() {
 }
 
 inline void take_damage(uint32_t damage) {
-	printf("took %d damage from %d health %d\r\n", damage, vehicle.last_hit_id, vehicle.status.HP);
+	//printf("took %d damage from %d health %d\r\n", damage, vehicle.last_hit_id, vehicle.status.HP);
 	if (vehicle.status.HP < damage) vehicle.status.HP = 0;
 	//else vehicle.status.HP -= damage;
 	send_event();
