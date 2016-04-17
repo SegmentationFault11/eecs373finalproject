@@ -12,7 +12,7 @@ inline void sample_acc() {
 	int acc = abs(x_acc - settings.center_acc_x) + abs(y_acc - settings.center_acc_y);// - settings.center_acc;
 	//int acc = get_hypotenuse(x_acc, y_acc) - settings.center_acc;
 
-	printf("acc = %d\r\n", acc);
+//	printf("acc = %d\r\n", acc);
 	if (prev_acc > acc && acc > 100) {
 		uint32_t damage = prev_acc>>3;
 //		printf("acc = %d\r\n", damage);

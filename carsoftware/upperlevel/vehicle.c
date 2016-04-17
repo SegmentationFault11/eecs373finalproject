@@ -7,7 +7,7 @@ inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	vehicle.id = id;
 	vehicle.type = intype;
 	vehicle.team = team;
-	vehicle.last_hit_id = 69;
+	vehicle.last_hit_id = 255;
 
 	vehicle.status.gameover = 0;
 	vehicle.performance.steer_multiplier = 1.f;
@@ -17,12 +17,13 @@ inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	vehicle.weapon.count = 200000;
 
 	init_base_stats();
+	settings.type_set = 1;
+	printf("init called\r\n");
 
-	init_steering();
-	init_motor();
 	center_acc();
 	init_controller();
 	init_receiver();
+	init_steering();
 }
 
 inline void init_base_stats() {
@@ -144,7 +145,7 @@ inline void restore_health() {
 }
 
 inline void take_damage(uint32_t damage) {
-	//printf("took %d damage from %d health %d\r\n", damage, vehicle.last_hit_id, vehicle.status.HP);
+	printf("took %d damage from %d health %d\r\n", damage, vehicle.last_hit_id, vehicle.status.HP);
 	if (vehicle.status.HP < damage) vehicle.status.HP = 0;
 	//else vehicle.status.HP -= damage;
 	send_event();

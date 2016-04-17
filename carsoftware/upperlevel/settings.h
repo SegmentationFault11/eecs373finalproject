@@ -20,6 +20,9 @@ typedef struct Settings {
 
 	// Counter
 	uint8_t acc_counter;
+
+	uint8_t game_start;
+	uint8_t type_set;
 } settings_t;
 
 inline void init_settings();

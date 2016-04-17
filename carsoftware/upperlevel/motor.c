@@ -3,14 +3,6 @@
 extern struct Settings settings;
 extern struct Vehicle vehicle;
 
-void init_motor() {
-	// Start motor
-	*settings.motor_loc = 1<<21;
-
-	// Set stationary
-	*settings.motor_loc = 128;
-}
-
 void start_motor() {
 	*settings.motor_loc = 1<<21;
 	*settings.motor_loc = 128;

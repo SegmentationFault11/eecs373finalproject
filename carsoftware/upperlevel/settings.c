@@ -16,4 +16,7 @@ inline void init_settings() {
 	settings.steer_offset = 0;
 
 	settings.acc_counter = 0;
+
+	settings.game_start = 0;
+	settings.type_set = 0;
 }

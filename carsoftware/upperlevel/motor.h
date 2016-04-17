@@ -5,7 +5,6 @@
 
 
 // Steering functions
-void init_motor();
 
 void start_motor();
 
