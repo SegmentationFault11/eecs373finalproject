@@ -11,6 +11,10 @@ function GameProgressActivity(id_in, router_in) {
     this.events = [];
     this.terminate_game_button = {};
     this.restart_game_button = {};
+
+    this.countdown_timer = {};
+    this.number_of_seconds = 5;
+
 }
 
 GameProgressActivity.prototype = new Activity();
@@ -32,7 +36,17 @@ GameProgressActivity.prototype.on_show = function(optional_data) {
 
     setTimeout(function() {
         this.on_show();
-    }.bind(this), 2000);
+        if (this.number_of_seconds > 0) {
+            --this.number_of_seconds;
+        } else {
+            if (this.number_of_seconds === 0) {
+                this.ajax_requester.get("/end_game", function() {
+                    alert("Game Ended!");
+                }.bind(this));
+            }
+            --this.number_of_seconds;
+        }
+    }.bind(this), 1000);
 };
 
 GameProgressActivity.prototype.redraw = function() {
@@ -47,8 +61,17 @@ GameProgressActivity.prototype.redraw = function() {
 }
 GameProgressActivity.prototype.wire_up_widgets = function() {
      
-    this.terminate_game_button = $("#terminate_button");
     this.restart_button = $("#restart_button");
+    if (this.number_of_seconds > 0) {
+        this.restart_button.prop("disabled", true);
+    }
+
+    this.countdown_timer = $("#time_left");
+    if (this.number_of_seconds >= 0) {
+        this.countdown_timer.html(this.number_of_seconds);
+    } else {
+        this.countdown_timer.html(0);
+    }
 
     this.terminate_game_button.click(function() {
         this.ajax_requester.get("/end_game", function() {
@@ -60,6 +83,5 @@ GameProgressActivity.prototype.wire_up_widgets = function() {
             location.reload();
         }.bind(this));
     }.bind(this));
-    console.log("HERE");
 };
 
