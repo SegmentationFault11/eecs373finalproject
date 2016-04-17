@@ -14,12 +14,10 @@ inline void decode_controller() {
 	uint32_t bytemask4 = 0xFF000000;
 
 	uint32_t curr_pressed = *settings.controller_loc;
+	//printf("ctl = 0x%08x\r\n", curr_pressed);
 	if (vehicle.controller.pressed_buttons != curr_pressed) {
 
 		// Set steering
-//		int steer_amount = ((curr_pressed & bytemask3) >> 14) + settings.steer_offset;
-//		if (steer_amount > 1023) steer_amount = 1023;
-//		else if (steer_amount < 0) steer_amount = 0;
 		set_steer((curr_pressed & bytemask3) >> 14);
 
 		// Set motor
@@ -41,7 +39,7 @@ inline void decode_controller() {
 			}
 			// Start
 			if (((vehicle.controller.pressed_buttons >> 3) & 1) && !((curr_pressed >> 3) & 1)) {
-				init_base_stats();
+				//init_base_stats();
 			}
 			// Up
 			if (((vehicle.controller.pressed_buttons >> 4) & 1) && !((curr_pressed >> 4) & 1)) {
@@ -95,7 +93,7 @@ inline void decode_controller() {
 			}
 			// Square
 			if (((vehicle.controller.pressed_buttons >> 15) & 1) && !((curr_pressed >> 15) & 1)) {
-				receive_upgrade(1);
+				//receive_upgrade(1);
 			}
 		}
 		vehicle.controller.pressed_buttons = curr_pressed;

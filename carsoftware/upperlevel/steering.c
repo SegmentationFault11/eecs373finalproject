@@ -12,17 +12,12 @@ void init_steering() {
 
 	// Enable GPIO interrupts
 	MSS_GPIO_enable_irq(MSS_GPIO_4);
-
-	// Start steering
-	*settings.steer_loc = 1<<22;
-
-	// Center wheels
-	*settings.steer_loc = 512;
 }
 
 inline void sample_steer() {
 	uint16_t pot_pos = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_2"))>>2);
-	*settings.steer_loc = pot_pos + (1<<20);
+	*settings.steer_loc = (pot_pos & 0b1111111111) + (1<<20);
+	//printf("pos = %d\r\n", pot_pos);
 }
 
 inline void start_steer() {
