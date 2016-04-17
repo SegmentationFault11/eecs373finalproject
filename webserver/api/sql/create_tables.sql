@@ -24,8 +24,9 @@ CREATE TABLE PlayerAndCars
     player_id INT,
     car_type CHAR(30),
     car_health INT,
-    kills INT,
+    deaths INT,
     game_id INT,
+    upgrades INT,
 
     FOREIGN KEY(car_type) REFERENCES CarTypes(car_type) ON DELETE CASCADE,
     FOREIGN KEY(game_id) REFERENCES Games(game_id) ON DELETE CASCADE,

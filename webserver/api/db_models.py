@@ -73,8 +73,9 @@ class PlayerAndCar():
         self.player_id = tuple_in[0]
         self.car_type = tuple_in[1]
         self.car_health = tuple_in[2]
-        self.kills = tuple_in[3]
+        self.deaths = tuple_in[3]
         self.game_id = tuple_in[4]
+        self.upgrades = tuple_in[5]
 
     def __repr__(self):
         return "<PlayerAndCar {tuple}>".format(tuple = self.to_string_tuple())
@@ -85,21 +86,22 @@ class PlayerAndCar():
     # JSON AND SQL METHODS
     def to_json(self):
         return { "player_id" : self.player_id, "car_type" : self.car_type, \
-                "car_health" : self.car_health, "kills" : self.kills,
-                "game_id" : self.game_id}
+                "car_health" : self.car_health, "deaths" : self.deaths,
+                "game_id" : self.game_id, "upgrades":self.upgrades}
     @staticmethod
     def from_json(json):
         try:
             return PlayerAndCar((json['player_id'], json['car_type'],
-                    json['car_health'], json['kills'], json['game_id']))
+                    json['car_health'], json['deaths'], json['game_id'],
+                    json['upgrades']))
         except KeyError as ke:
             raise KeyError("PlayerAndCar object cannot be constructed from"
                 "json")
     def to_string_tuple(self):
-        return "({player_id}, \'{car_type}\', {car_health}, {kills}, {game_id})"\
+        return "({player_id}, \'{car_type}\', {car_health}, {deaths}, {game_id}, {upgrades})"\
                 .format(player_id = self.player_id, car_type = self.car_type,
-                        car_health = self.car_health, kills = self.kills,
-                        game_id = self.game_id)
+                        car_health = self.car_health, deaths = self.deaths,
+                        game_id = self.game_id, upgrades = self.upgrades)
 
 class Event():
     def __init__(self, tuple_in):

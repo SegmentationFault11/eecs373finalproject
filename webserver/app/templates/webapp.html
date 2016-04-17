@@ -162,20 +162,22 @@
                                 <h1>Player {{player_id}}</h1>
                                 <h4>{{car_type}}</h4>
                                 <strong>Health</strong> <div
-                                    id="health">9000</div>
-                                <strong>Kills</strong> <div
-                                    id="kills">25</div>
+                                    id="health">{{car_health}}</div>
                                 <strong>Upgrades</strong> <div
-                                    id="upgrades">3</div>
+                                    id="upgrades">{{upgrades}}</div>
+                                <strong>Deaths</strong> <div
+                                    id="upgrades">{{deaths}}</div>
                             </div>
                         </div>
                         {{/each}}
                     </div>
 
-                    <button class="btn btn-danger"
-                        id="terminate_button">End game</button>
-                    <button class="btn btn-danger"
-                        id="restart_button">Restart</button>
+                    <div style="text-align:center;">
+                        <button class="btn btn-danger btn-large"
+                            id="terminate_button">End game</button>
+                        <button class="btn btn-success btn-large"
+                            id="restart_button">Restart</button>
+                    </div>
 
                     <h2>Events log</h2>
                     <div class="row">
@@ -184,8 +186,8 @@
                                 {{#each events}}
                                 <li class="list-group-item"><font
                                     face="courier">{{timestamp}}</font>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                    {{information}}</li>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                {{information}}</li>
                                 {{/each}}
                             </ul>
                         </div>

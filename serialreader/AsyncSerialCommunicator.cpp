@@ -136,7 +136,7 @@ void accept_data(AsyncSerialCommunicator& communicator) {
 
     communicator.fd = open(portname, O_RDWR | O_NOCTTY | O_SYNC);
     if (communicator.fd < 0) {
-        throw std::runtime_error(string{"error "} + std::to_string(errno) + 
+        throw std::runtime_error(string{"error "} + strerror(errno) + 
                 string{"from tcgetattr"});
     }
 
@@ -264,7 +264,7 @@ void set_interface_attributes (int fd, int speed, int parity) {
 
     // output error on error
     if (tcsetattr (fd, TCSANOW, &tty) != 0) {
-        throw std::runtime_error(string{"error "} + std::to_string(errno) + 
+        throw std::runtime_error(string{"error "} + strerror(errno) + 
                 string{"from tcgetattr"});
     }
 }
@@ -273,7 +273,7 @@ void set_blocking (int fd, int should_block) {
     struct termios tty;
     memset (&tty, 0, sizeof tty);
     if (tcgetattr (fd, &tty) != 0) {
-        throw std::runtime_error(string{"error "} + std::to_string(errno) + 
+        throw std::runtime_error(string{"error "} + strerror(errno) + 
                 string{"from tcgetattr"});
     }
 
@@ -281,7 +281,7 @@ void set_blocking (int fd, int should_block) {
     tty.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
 
     if (tcsetattr (fd, TCSANOW, &tty) != 0) {
-        throw std::runtime_error(string{"error "} + std::to_string(errno) + 
+        throw std::runtime_error(string{"error "} + strerror(errno) + 
                 string{"from tcgetattr"});
     }
 }

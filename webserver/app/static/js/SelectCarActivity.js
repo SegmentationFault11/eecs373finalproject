@@ -91,8 +91,8 @@ SelectCarActivity.prototype.wire_up_widgets = function() {
 
                 this.make_post_request_to_url("/player_and_car", 
                     [{player_id: this.current_player,
-                        car_type: this.car_types[i].car_type, car_health: 10,
-                        kills: 0, game_id: 1}
+                        car_type: this.car_types[i].car_type, car_health: 255,
+                        deaths: 0, game_id: 1, upgrades: 0}
                     ], function() {
 
                         // redraw the screen

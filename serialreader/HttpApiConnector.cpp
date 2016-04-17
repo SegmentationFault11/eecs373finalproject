@@ -109,10 +109,7 @@ void send_to_server(string address, string port,
     SocketRAII sock = SocketUtilities::create_client_socket(
             address.c_str(), port.c_str());
 
-    string information_cut = string(information.begin(), information.begin() + 14);
-    string to_send = std::to_string(time(0)) + information_cut;
-
-    std::vector<char> data_to_send (to_send.begin(), to_send.end());
+    std::vector<char> data_to_send (information.begin(), information.end());
     send_all(sock, data_to_send);
 }
 

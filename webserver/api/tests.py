@@ -16,7 +16,7 @@ if __name__ == "__main__":
     assert requests.post("http://localhost:8000/player_and_car", headers =
             {"content-type":"application/json"}, data = json.dumps([{"game_id"
                 : 1, "player_id" : 1, "car_type":"fast", "car_health":10,
-                "kills":2}])).json()["status"] == "ok"
+                "deaths":2}])).json()["status"] == "ok"
     assert requests.get("http://localhost:8000/player_and_car").json()\
             [0]["player_id"] == 1
 

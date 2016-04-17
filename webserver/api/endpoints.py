@@ -4,7 +4,7 @@ from __init__ import api, mysql, execute_query
 from db_models import *
 from decorators import api_jsonify
 import time
-import socket
+import socket, pickle
 
 def send_data_to_server(data):
     """Sends data to the C++ server which is connected to the SmartFusion"""
@@ -135,9 +135,9 @@ def player_and_car():
         return get_request_with_class(PlayerAndCar)
     else:
         if 'player_id' in request.json[0] and 'car_type' in request.json[0] \
-        and 'car_health' in request.json[0] and 'kills' in request.json[0] \
+        and 'car_health' in request.json[0] and 'deaths' in request.json[0] \
         and 'game_id' in request.json[0]:
-            car_to_byte = {"tank":1, "fast":2, "strong":3, "trump":4}
+            car_to_byte = {"tank":2, "fast":0, "strong":1, "trump":3}
 
             barray = bytearray()
             barray.append(0)
@@ -204,19 +204,35 @@ def start_message_server(address, port_number):
 
     while True:
         client_connection, client_address = listen_socket.accept()
-        request = client_connection.recv(14)
-        player_id = request[3]
-        player_health = request[4]
-        player_lives = request[5]
-        player_killer = request[6]
-        if player_health == 0:
+        request = client_connection.recv(1024)
+        print "length of message received ", len(request)
+        print request
 
-            # get the current time
-            ts = time.time()
-            st = datetime.datetime.fromtimestamp(ts)\
-                    .strftime('%Y-%m-%d %H:%M:%S')
-            execute_query("INSERT INTO Events VALUES ('{information}','{timestamp}');"\
-                    .format(information = "Player " + str(player_id) + " died!", \
-                                timestamp = st), True)
+        # get the current time
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts)\
+                .strftime('%Y-%m-%d %H:%M:%S')
+        if "died" in request:
+            execute_query("UPDATE PlayerAndCars SET PlayerAndCars.car_health = {health}, PlayerAndCars.deaths = PlayerAndCars.deaths + 1 WHERE PlayerAndCars.player_id = {player_id};"\
+                            .format(health = 255, player_id =
+                                int(request[7])), True)
+        execute_query("INSERT INTO Events VALUES ('{information}','{timestamp}');"\
+                .format(information = request, \
+                            timestamp = st), True)
+
+        if "Health" in request:
+            new_health = int(filter(str.isdigit, request.split("!")[1]))
+            execute_query("UPDATE PlayerAndCars SET PlayerAndCars.car_health = {health} WHERE PlayerAndCars.player_id = {player_id};".\
+                    format(health = new_health, player_id = int(request[7])), \
+                    True)
+
+        if "Killed" in request:
+            player_who_killed = int(filter(str.isdigit, 
+                request.split("Killed")[1]))
+            execute_query("INSERT INTO Events VALUES ('{information}', '{timestamp}');".\
+                    format(information = "Gave upgrade to player " + \
+                    str(player_who_killed), timestamp = st), True)
+            execute_query("UPDATE PlayerAndCars SET PlayerAndCars.upgrades = PlayerAndCars.upgrades + 1 WHERE PlayerAndCars.player_id = {player_id};".\
+                    format(player_id = player_who_killed), True)
 
         client_connection.close()
