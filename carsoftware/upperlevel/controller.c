@@ -17,13 +17,13 @@ inline void decode_controller() {
 	if (vehicle.controller.pressed_buttons != curr_pressed) {
 
 		// Set steering
-		int steer_amount = ((curr_pressed & bytemask3) >> 14) + settings.steer_offset;
-		if (steer_amount > 1023) steer_amount = 1023;
-		else if (steer_amount < 0) steer_amount = 0;
-		set_steer(steer_amount);
+//		int steer_amount = ((curr_pressed & bytemask3) >> 14) + settings.steer_offset;
+//		if (steer_amount > 1023) steer_amount = 1023;
+//		else if (steer_amount < 0) steer_amount = 0;
+		set_steer((curr_pressed & bytemask3) >> 14);
 
 		// Set motor
-		set_motor(((curr_pressed & bytemask4) >> 24)*vehicle.performance.power_multiplier + (1-vehicle.performance.power_multiplier)*127);
+		set_motor((uint8_t)((curr_pressed & bytemask4) >> 24));
 
 		// Set push buttons
 		if ((vehicle.controller.pressed_buttons & bytemask1) != (curr_pressed & bytemask1)) {

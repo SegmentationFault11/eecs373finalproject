@@ -11,7 +11,7 @@ void start_motor();
 
 void kill_motor();
 
-void set_motor(int speed);
+void set_motor(uint8_t speed);
 
 
 #endif /* MOTOR_H_ */
