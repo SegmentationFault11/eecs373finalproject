@@ -59,6 +59,7 @@ GameProgressActivity.prototype.redraw = function() {
             '#player_progress_template_placeholder', context);
 
 }
+
 GameProgressActivity.prototype.wire_up_widgets = function() {
      
     this.restart_button = $("#restart_button");
