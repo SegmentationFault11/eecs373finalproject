@@ -9,11 +9,11 @@ function GameProgressActivity(id_in, router_in) {
     // the object that contains all the data on the page
     this.player_and_cars = [];
     this.events = [];
-    this.terminate_game_button = {};
     this.restart_game_button = {};
+    this.terminate_button = {};
 
     this.countdown_timer = {};
-    this.number_of_seconds = 5;
+    this.number_of_seconds = 300;
 
 }
 
@@ -67,6 +67,11 @@ GameProgressActivity.prototype.wire_up_widgets = function() {
         this.restart_button.prop("disabled", true);
     }
 
+    this.terminate_button = $("#terminate_button");
+    this.terminate_button.click(function() {
+        this.number_of_seconds = 0;
+    }.bind(this));
+
     this.countdown_timer = $("#time_left");
     if (this.number_of_seconds >= 0) {
         this.countdown_timer.html(this.number_of_seconds);
@@ -74,11 +79,6 @@ GameProgressActivity.prototype.wire_up_widgets = function() {
         this.countdown_timer.html(0);
     }
 
-    this.terminate_game_button.click(function() {
-        this.ajax_requester.get("/end_game", function() {
-            alert("Game Ended!");
-        });
-    }.bind(this));
     this.restart_button.click(function() {
         this.ajax_requester.get("/restart_game", function() {
             location.reload();

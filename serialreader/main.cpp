@@ -49,11 +49,31 @@ int main(int argc, char** argv) {
                     cout << ch << ' ';
             } cout << endl;
         }
-        string event_information = convert_event_to_string(data);
-        { unique_lock<mutex> lck {cout_mutex};
-            cout << "event being sent is " << event_information << endl;
+
+        vector<vector<uint8_t>> data_gotten_from_device;
+        while (data.size() >= 14) {
+            vector<uint8_t> current_data (data.begin(), data.begin() + 14);
+            for(int i = 0; i < 14; ++i) {
+                data.erase(data.begin());
+            }
+            data_gotten_from_device.push_back(current_data);
         }
-        connector.send_event_information(event_information);
+
+        while (!data_gotten_from_device.empty()) {
+            string event_information = convert_event_to_string(
+                    data_gotten_from_device.front());
+            data_gotten_from_device.erase(data_gotten_from_device.begin());
+            if (event_information.empty()) { 
+                cout << "IGNORING EVENT" << endl;
+                continue; 
+            }
+            { unique_lock<mutex> lck {cout_mutex};
+                cout << "Size of data_gotten_from_device is " 
+                    << data_gotten_from_device.size() << endl;
+                cout << "event being sent is " << event_information << endl;
+            }
+            connector.send_event_information(event_information);
+        }
     }
 
     return 0;
@@ -86,26 +106,40 @@ string convert_event_to_string(const vector<uint8_t>& event) {
     string to_return{""};
 
     // FAIL IF SOMETHING WENT WRONG
-    assert(event.size() == 14);
-    assert(!event[0]);
-    assert(!event[13]);
-    assert(event[2] == 'e');
+    // assert(event.size() == 14);
+    // assert(!event[0]);
+    // assert(!event[13]);
+    // assert(event[2] == 'e');
+    // if (event.size() != 14 || event[0] || event[13] || event[2] != 'e') {
+    //     return string{""};
+    // }
+    bool does_have_e = false;
+    int e_index = -1;
+    for (int i = 0; i < 14; ++i) {
+        if (event[i] == 'e') {
+            e_index = i;
+            does_have_e = true;
+        }
+    }
+    if (!does_have_e) { return string{""}; }
 
     // Check what happened
-    to_return += string{"Player "} + to_string(event[3]);
-    to_return += (!event[4]) ? (string{" died! "}) : (string{" event! "});
-    if (event[5] != std::numeric_limits<uint8_t>::max()) {
-        to_return += (string{"Killed by player "} + to_string(event[5]));
+    to_return += string{"Player "} + to_string(event[e_index + 1]);
+    to_return += (!event[e_index + 2]) ? (string{" died! "}) : (string{" event! "});
+    if (event[e_index + 3] != std::numeric_limits<uint8_t>::max() && 
+            !event[e_index + 2]) {
+        to_return += (string{"Killed by player "} + to_string(event[e_index + 3]) + 
+                string{"! "});
 
         // send upgrade
         communicator.send_data(vector<uint8_t> {0, 
-                static_cast<uint8_t>(event[5] + 1), 
+                static_cast<uint8_t>(event[e_index + 3] + 1), 
                 'u', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
     }
 
     // update health
-    if (event[4]) {
-        to_return += string{"Health lowered to "} + to_string(event[4]);
+    if (event[e_index + 2]) {
+        to_return += string{"Health lowered to "} + to_string(event[e_index + 2]);
     }
     
     return to_return;
