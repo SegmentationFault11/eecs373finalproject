@@ -3,8 +3,8 @@
 struct Settings settings;
 struct Vehicle vehicle;
 
-int VEHICLE_ID = 2;
-#define STAND_ALONE 1
+int VEHICLE_ID = 4;
+#define STAND_ALONE 0
 
 int main() {
 
@@ -17,6 +17,9 @@ int main() {
 	// Initialize settings
 	init_settings();
 	init_comms();
+
+	kill_steer();
+	kill_motor();
 
 start:
 

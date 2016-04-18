@@ -13,7 +13,10 @@ inline void shoot(){
 
 inline void trigger() {
 	if (vehicle.weapon.count == 0) shoot();
-	if (vehicle.weapon.type == burst && vehicle.weapon.count == 6000) shoot();
-	if (vehicle.weapon.type == burst && vehicle.weapon.count == 12000) shoot();
-	if (vehicle.weapon.count < 20000) ++vehicle.weapon.count;
+	if (vehicle.weapon.count == 6000) shoot();
+	if (vehicle.weapon.count == 12000) shoot();
+	if (vehicle.weapon.type == burst && vehicle.weapon.count == 18000) shoot();
+	if (vehicle.weapon.type == burst && vehicle.weapon.count == 24000) shoot();
+	if (vehicle.weapon.type == burst && vehicle.weapon.count == 30000) shoot();
+	if (vehicle.weapon.count < 1000000) ++vehicle.weapon.count;
 }

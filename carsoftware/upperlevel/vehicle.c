@@ -14,7 +14,7 @@ inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 	vehicle.performance.upgrades_available = 0;
 	vehicle.weapon.reload_rate = 0;
 	vehicle.status.lives = DEFAULT_LIVES;
-	vehicle.weapon.count = 200000;
+	vehicle.weapon.count = 1000000;
 
 	init_base_stats();
 	settings.type_set = 1;
@@ -27,6 +27,7 @@ inline void init_vehicle(uint8_t id, vehicleT_t intype, uint8_t team) {
 }
 
 inline void init_base_stats() {
+	vehicle.weapon.count = 1000000;
 	vehicle.weapon.type = single;
 	if (vehicle.type == Tank) {
 		vehicle.status.HP = TANK_BASE_HEALTH;
@@ -145,9 +146,9 @@ inline void restore_health() {
 }
 
 inline void take_damage(uint32_t damage) {
-	printf("took %d damage from %d health %d\r\n", damage, vehicle.last_hit_id, vehicle.status.HP);
 	if (vehicle.status.HP < damage) vehicle.status.HP = 0;
-	//else vehicle.status.HP -= damage;
+	else vehicle.status.HP -= damage;
+	printf("took %d damage from %d health %d\r\n", damage, vehicle.last_hit_id, vehicle.status.HP);
 	send_event();
 	if (vehicle.status.HP == 0) deathed();
 }
@@ -155,20 +156,24 @@ inline void take_damage(uint32_t damage) {
 inline void deathed() {
 	tmnt_vehicle();
 
-	printf("death\r\n");
 	// Wait a few seconds
 	volatile uint32_t i = 0;
 	for (i = 0; i < 100000000; ++i);
 
-	if (vehicle.status.lives > 0) {
-		--vehicle.status.lives;
-		start_steer();
-		start_motor();
-		init_base_stats();
-	}
-	else {
-		vehicle.status.gameover = 1;
-	}
+	start_steer();
+	start_motor();
+
+	init_base_stats();
+
+//	if (vehicle.status.lives > 0) {
+//		--vehicle.status.lives;
+//		start_steer();
+//		start_motor();
+//		init_base_stats();
+//	}
+//	else {
+//		vehicle.status.gameover = 1;
+//	}
 }
 
 inline void tmnt_vehicle() {

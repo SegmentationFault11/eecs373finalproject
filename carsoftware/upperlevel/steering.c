@@ -17,7 +17,6 @@ void init_steering() {
 inline void sample_steer() {
 	uint16_t pot_pos = (ACE_get_ppe_sample(ACE_get_channel_handle((const uint8_t *)"ADCDirectInput_2"))>>2);
 	*settings.steer_loc = (pot_pos & 0b1111111111) + (1<<20);
-	//printf("pos = %d\r\n", pot_pos);
 }
 
 inline void start_steer() {

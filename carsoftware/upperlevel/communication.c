@@ -16,8 +16,15 @@ inline void send_event() {
 	message[2]  = (unsigned char)'e';
 	message[3]  = (unsigned char)vehicle.id;
 	message[4]  = (unsigned char)vehicle.status.HP;
-	message[5]  = (unsigned char)vehicle.last_hit_id;
+	if (vehicle.status.HP) message[5] = (unsigned char)255;
+	else message[5] = (unsigned char)vehicle.last_hit_id;
 	message[13] = (unsigned char)0;
 
+	int i;
+	for (i = 0; i < 14; ++i) {
+		printf("0x%02x ", message[i]);
+	}
+
 	MSS_UART_polled_tx(&g_mss_uart1,  message, (uint32_t)14);
+
 }
